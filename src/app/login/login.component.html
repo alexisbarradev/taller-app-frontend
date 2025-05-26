@@ -1,0 +1,26 @@
+<div class="login-container">
+  <div class="image-side"></div>
+  <div class="form-side">
+    <div class="form-box">
+      <h1>TradingThings</h1>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- ✅ Cambia formControlName a "usuario" -->
+        <input formControlName="usuario" placeholder="RUT" />
+
+        <div class="password-field">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Clave"
+          />
+          <button type="button" class="toggle-btn" (click)="togglePassword()">
+            {{ showPassword ? 'Ocultar' : 'Ver' }}
+          </button>
+        </div>
+
+        <button type="submit" class="login-btn">Ingresar</button>
+      </form>
+      <a href="#" class="forgot-password">¿Olvidaste tu clave?</a>
+    </div>
+  </div>
+</div>
