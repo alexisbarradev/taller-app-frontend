@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -62,57 +63,42 @@ export class RegisterComponent {
       this.successMessage = null;
 
       try {
-        let urlContrato = null;
+        const formData = new FormData();
+        
+        // Append all form fields
+        const formValue = this.registerForm.value;
+        Object.keys(formValue).forEach(key => {
+          formData.append(key, formValue[key]);
+        });
 
-        // If a file is selected, upload it first
+        // Append role and state
+        formData.append('rol', JSON.stringify({ id: 2 })); // USER
+        formData.append('estado', JSON.stringify({ id: 2 })); // INACTIVO
+
+        // Append file if selected
         if (this.selectedFile) {
-          const formData = new FormData();
           formData.append('file', this.selectedFile);
-
-          try {
-            const uploadResponse = await this.http.post<{ url: string }>('http://localhost:8080/api/upload', formData).toPromise();
-            urlContrato = uploadResponse?.url;
-          } catch (error) {
-            this.errorMessage = 'Error al subir el archivo. Por favor, intenta nuevamente.';
-            this.isUploading = false;
-            return;
-          }
         }
 
-        // Prepare the user registration payload
-        const formValue = this.registerForm.value;
-        const payload = {
-          rut: formValue.rut,
-          primerNombre: formValue.primerNombre,
-          segundoNombre: formValue.segundoNombre,
-          apellidoPaterno: formValue.apellidoPaterno,
-          apellidoMaterno: formValue.apellidoMaterno,
-          direccion: formValue.direccion,
-          usuario: formValue.usuario,
-          correo: formValue.correo,
-          password: formValue.password,
-          rol: { id: 2 }, // USER
-          estado: { id: 2 }, // INACTIVO
-          urlContrato: urlContrato
-        };
-
-        // Register the user
-        this.http.post('http://localhost:8080/api/registro', payload, { responseType: 'text' }).subscribe({
-          next: (msg) => {
-            this.successMessage = msg;
-            this.errorMessage = null;
-            this.registerForm.reset();
-            this.selectedFile = null;
-            this.isUploading = false;
-          },
-          error: (err) => {
-            this.errorMessage = err.error || 'Error al registrar usuario.';
-            this.successMessage = null;
-            this.isUploading = false;
-          }
-        });
-      } catch (error) {
-        this.errorMessage = 'Error inesperado. Por favor, intenta nuevamente.';
+        // Send everything in a single request
+        const response = await firstValueFrom(
+          this.http.post('http://localhost:8080/api/registro-completo', formData, { responseType: 'text' })
+        );
+        
+        this.successMessage = response;
+        this.errorMessage = null;
+        this.registerForm.reset();
+        this.selectedFile = null;
+        
+        // Redirect to login after successful registration
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
+      } catch (error: any) {
+        console.error('Error during registration:', error);
+        this.errorMessage = error.error || 'Error al registrar usuario. Por favor, intenta nuevamente.';
+        this.successMessage = null;
+      } finally {
         this.isUploading = false;
       }
     } else {
