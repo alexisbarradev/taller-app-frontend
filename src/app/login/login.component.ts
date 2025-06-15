@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // ✅ Importa Router
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { AuthService } from '../services/auth.service';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -19,7 +19,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router // ✅ Inyecta Router
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
       usuario: ['', Validators.required],
@@ -31,6 +31,11 @@ export class LoginComponent {
     this.showPassword = !this.showPassword;
   }
 
+  hasError(controlName: string): boolean {
+    const control = this.loginForm.get(controlName);
+    return control ? control.invalid && control.touched : false;
+  }
+
   onSubmit(): void {
     if (this.loginForm.valid) {
       const loginRequest = this.loginForm.value;
@@ -39,7 +44,7 @@ export class LoginComponent {
           console.log('JWT:', response);
           localStorage.setItem('token', response);
           this.errorMessage = null;
-          this.router.navigate(['/dashboard']); // ✅ Redirige al dashboard
+          this.router.navigate(['/foro']);
         },
         error: (err) => {
           console.error(err);
@@ -47,7 +52,9 @@ export class LoginComponent {
         },
       });
     } else {
-      this.errorMessage = 'Please fill in all fields.';
+      // Marcar todos los campos como tocados para mostrar errores
+      this.loginForm.markAllAsTouched();
+      this.errorMessage = 'Por favor completa todos los campos correctamente.';
     }
   }
 }

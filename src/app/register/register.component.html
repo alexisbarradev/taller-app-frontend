@@ -1,0 +1,51 @@
+<div class="register-container">
+  <div class="image-side"></div>
+  <div class="form-side">
+    <div class="form-box">
+      <h1>Registrarse</h1>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <input formControlName="rut" placeholder="RUT" [class.invalid]="hasError('rut')" />
+        <div class="error-message" *ngIf="hasError('rut')">Por favor, ingresa el RUT.</div>
+        <input formControlName="primerNombre" placeholder="Primer nombre" [class.invalid]="hasError('primerNombre')" />
+        <div class="error-message" *ngIf="hasError('primerNombre')">Por favor, ingresa el primer nombre.</div>
+        <input formControlName="segundoNombre" placeholder="Segundo nombre (opcional)" />
+        <input formControlName="apellidoPaterno" placeholder="Apellido paterno" [class.invalid]="hasError('apellidoPaterno')" />
+        <div class="error-message" *ngIf="hasError('apellidoPaterno')">Por favor, ingresa el apellido paterno.</div>
+        <input formControlName="apellidoMaterno" placeholder="Apellido materno" [class.invalid]="hasError('apellidoMaterno')" />
+        <div class="error-message" *ngIf="hasError('apellidoMaterno')">Por favor, ingresa el apellido materno.</div>
+        <input formControlName="direccion" placeholder="Dirección" [class.invalid]="hasError('direccion')" />
+        <div class="error-message" *ngIf="hasError('direccion')">Por favor, ingresa tu dirección.</div>
+        <input formControlName="usuario" placeholder="Usuario" [class.invalid]="hasError('usuario')" />
+        <div class="error-message" *ngIf="hasError('usuario')">Por favor, ingresa un usuario.</div>
+        <input type="email" formControlName="correo" placeholder="Correo electrónico" [class.invalid]="hasError('correo')" />
+        <div class="error-message" *ngIf="hasError('correo')">Por favor, ingresa un correo electrónico válido.</div>
+        <input [type]="'password'" formControlName="password" placeholder="Clave" [class.invalid]="hasError('password')" />
+        <div class="error-message" *ngIf="hasError('password')">Por favor, ingresa una clave (7-18 caracteres).</div>
+        
+        <div class="file-upload">
+          <label for="contractFile" class="file-label">
+            <i class="fa fa-upload"></i> Subir contrato (PDF o imagen)
+          </label>
+          <input 
+            type="file" 
+            id="contractFile" 
+            (change)="onFileSelected($event)"
+            accept=".pdf,image/*"
+            class="file-input"
+          />
+          <div class="file-name" *ngIf="selectedFile">
+            {{ selectedFile.name }}
+          </div>
+        </div>
+        <div class="error-message" *ngIf="fileError">{{ fileError }}</div>
+
+        <button type="submit" class="register-btn" [disabled]="isUploading">
+          {{ isUploading ? 'Registrando...' : 'Registrarse' }}
+        </button>
+      </form>
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+      <button type="button" class="back-btn" (click)="goToLogin()">Volver al inicio de sesión</button>
+    </div>
+  </div>
+</div> 
