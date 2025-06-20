@@ -1,46 +1,52 @@
 <div class="login-container">
   <div class="image-side"></div>
   <div class="form-side">
-    <div class="form-box">
-      <h1>TradingThings</h1>
+    <div class="login-box">
+      <div class="logo">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 12H6L9 3L15 21L18 12H21" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h1>TradingThings</h1>
+      </div>
+      <h2>Iniciar sesión</h2>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <input
-          formControlName="usuario"
-          placeholder="Usuario"
-          [class.invalid]="hasError('usuario')"
-        />
+        <div class="input-group">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z" fill="#9a9a9a"/>
+          </svg>
+          <input
+            type="text"
+            formControlName="usuario"
+            placeholder="Usuario"
+            [class.invalid]="hasError('usuario')"
+          />
+        </div>
         <div class="error-message" *ngIf="hasError('usuario')">
           Por favor, ingresa tu usuario.
         </div>
-
-        <div class="password-field">
+        
+        <div class="input-group">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 11V7a5 5 0 00-10 0v4a2 2 0 00-2 2v7a2 2 0 002 2h12a2 2 0 002-2v-7a2 2 0 00-2-2zm-8-4a3 3 0 016 0v4H9V7zm10 13a1 1 0 01-1 1H6a1 1 0 01-1-1v-7a1 1 0 011-1h12a1 1 0 011 1v7z" fill="#9a9a9a"/>
+          </svg>
           <input
             [type]="showPassword ? 'text' : 'password'"
             formControlName="password"
-            placeholder="Clave"
+            placeholder="Contraseña"
             [class.invalid]="hasError('password')"
           />
-          <button type="button" class="toggle-btn" (click)="togglePassword()" aria-label="Mostrar/Ocultar clave">
-            <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.362-2.7A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.965 9.965 0 01-4.293 5.03M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
-            </svg>
-          </button>
         </div>
         <div class="error-message" *ngIf="hasError('password')">
           Por favor, ingresa tu clave.
         </div>
 
-        <button type="submit" class="login-btn">Ingresar</button>
-      </form>
-      <a routerLink="/register" class="register-link">Registrarse</a>
-      <a routerLink="/password-recovery" class="forgot-password">¿Olvidaste tu clave?</a>
+        <a routerLink="/password-recovery" class="forgot-password">¿Olvidaste tu contraseña?</a>
 
-      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+        <button type="submit" class="login-btn">Iniciar sesión</button>
+        <button type="button" class="register-btn" routerLink="/register">Registrarse</button>
+
+        <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      </form>
     </div>
   </div>
 </div>
