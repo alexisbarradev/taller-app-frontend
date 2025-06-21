@@ -29,8 +29,7 @@ export class RegisterComponent {
       apellidoMaterno: ['', Validators.required],
       direccion: ['', Validators.required],
       usuario: ['', Validators.required],
-      correo: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(18)]]
+      correo: ['', [Validators.required, Validators.email]]
     });
   }
 
@@ -73,7 +72,7 @@ export class RegisterComponent {
 
         // Append role and state
         formData.append('rol', JSON.stringify({ id: 2 })); // USER
-        formData.append('estado', JSON.stringify({ id: 2 })); // INACTIVO
+        formData.append('estado', JSON.stringify({ id: 1 })); // ACTIVO
 
         // Append file if selected
         if (this.selectedFile) {

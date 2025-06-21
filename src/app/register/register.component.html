@@ -19,8 +19,6 @@
         <div class="error-message" *ngIf="hasError('usuario')">Por favor, ingresa un usuario.</div>
         <input type="email" formControlName="correo" placeholder="Correo electrónico" [class.invalid]="hasError('correo')" />
         <div class="error-message" *ngIf="hasError('correo')">Por favor, ingresa un correo electrónico válido.</div>
-        <input [type]="'password'" formControlName="password" placeholder="Clave" [class.invalid]="hasError('password')" />
-        <div class="error-message" *ngIf="hasError('password')">Por favor, ingresa una clave (7-18 caracteres).</div>
         
         <div class="file-upload">
           <label for="contractFile" class="file-label">

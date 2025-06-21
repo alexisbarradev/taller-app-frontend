@@ -1,0 +1,79 @@
+<div class="form-container">
+  <h2>Completar Registro</h2>
+  <p>¡Casi listo! Solo necesitamos algunos detalles más para completar tu perfil.</p>
+  
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    <!-- Correo (deshabilitado) -->
+    <div class="input-group">
+      <label for="correo">Correo Electrónico</label>
+      <input id="correo" type="email" formControlName="correo" readonly>
+    </div>
+
+    <!-- RUT -->
+    <div class="input-group">
+      <label for="rut">RUT</label>
+      <input id="rut" type="text" formControlName="rut" placeholder="Ej: 12345678-9">
+    </div>
+
+    <!-- Nombre y Apellidos -->
+    <div class="row">
+      <div class="input-group">
+        <label for="primerNombre">Primer Nombre</label>
+        <input id="primerNombre" type="text" formControlName="primerNombre">
+      </div>
+      <div class="input-group">
+        <label for="apellidoPaterno">Apellido Paterno</label>
+        <input id="apellidoPaterno" type="text" formControlName="apellidoPaterno">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-group">
+        <label for="segundoNombre">Segundo Nombre (Opcional)</label>
+        <input id="segundoNombre" type="text" formControlName="segundoNombre">
+      </div>
+      <div class="input-group">
+        <label for="apellidoMaterno">Apellido Materno</label>
+        <input id="apellidoMaterno" type="text" formControlName="apellidoMaterno">
+      </div>
+    </div>
+    
+    <!-- Dirección -->
+    <div class="input-group">
+      <label for="direccion">Dirección</label>
+      <input id="direccion" type="text" formControlName="direccion">
+    </div>
+    
+    <!-- Nombre de Usuario -->
+    <div class="input-group">
+      <label for="usuario">Nombre de Usuario</label>
+      <input id="usuario" type="text" formControlName="usuario" placeholder="Crea un alias único">
+    </div>
+
+    <!-- File Upload -->
+    <div class="file-upload">
+      <label for="contractFile" class="file-label">
+        <i class="fa fa-upload"></i> Subir contrato (PDF o imagen)
+      </label>
+      <input 
+        type="file" 
+        id="contractFile" 
+        (change)="onFileSelected($event)"
+        accept=".pdf,image/*"
+        class="file-input"
+      />
+      <div class="file-name" *ngIf="selectedFile">
+        {{ selectedFile.name }}
+      </div>
+    </div>
+    <div class="message error" *ngIf="fileError">{{ fileError }}</div>
+
+    <!-- Mensajes de éxito y error -->
+    <div *ngIf="successMessage" class="message success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
+
+    <button type="submit" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Guardando...' : 'Completar Registro' }}
+    </button>
+  </form>
+</div> 
