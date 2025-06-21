@@ -9,44 +9,13 @@
         <h1>TradingThings</h1>
       </div>
       <h2>Iniciar sesión</h2>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="input-group">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z" fill="#9a9a9a"/>
-          </svg>
-          <input
-            type="text"
-            formControlName="usuario"
-            placeholder="Usuario"
-            [class.invalid]="hasError('usuario')"
-          />
-        </div>
-        <div class="error-message" *ngIf="hasError('usuario')">
-          Por favor, ingresa tu usuario.
-        </div>
-        
-        <div class="input-group">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 11V7a5 5 0 00-10 0v4a2 2 0 00-2 2v7a2 2 0 002 2h12a2 2 0 002-2v-7a2 2 0 00-2-2zm-8-4a3 3 0 016 0v4H9V7zm10 13a1 1 0 01-1 1H6a1 1 0 01-1-1v-7a1 1 0 011-1h12a1 1 0 011 1v7z" fill="#9a9a9a"/>
-          </svg>
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            formControlName="password"
-            placeholder="Contraseña"
-            [class.invalid]="hasError('password')"
-          />
-        </div>
-        <div class="error-message" *ngIf="hasError('password')">
-          Por favor, ingresa tu clave.
-        </div>
+      
+      <button (click)="loginWithMicrosoft()" class="login-btn">
+        <svg class="microsoft-logo" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg"><path d="M11 11H0V0h11v11zm12 0h-9V0h9v11zm-12 12H0V12h11v11zm12 0h-9V12h9v11z" fill="#fff"/></svg>
+        <span>Iniciar sesión con Microsoft</span>
+      </button>
 
-        <a routerLink="/password-recovery" class="forgot-password">¿Olvidaste tu contraseña?</a>
-
-        <button type="submit" class="login-btn">Iniciar sesión</button>
-        <button type="button" class="register-btn" routerLink="/register">Registrarse</button>
-
-        <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
-      </form>
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
     </div>
   </div>
 </div>
