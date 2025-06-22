@@ -12,42 +12,42 @@
     <!-- RUT -->
     <div class="input-group">
       <label for="rut">RUT</label>
-      <input id="rut" type="text" formControlName="rut" placeholder="Ej: 12345678-9">
+      <input id="rut" type="text" formControlName="rut" placeholder="Ej: 12345678-9" [disabled]="isSubmitting">
     </div>
 
     <!-- Nombre y Apellidos -->
     <div class="row">
       <div class="input-group">
         <label for="primerNombre">Primer Nombre</label>
-        <input id="primerNombre" type="text" formControlName="primerNombre">
+        <input id="primerNombre" type="text" formControlName="primerNombre" [disabled]="isSubmitting">
       </div>
       <div class="input-group">
         <label for="apellidoPaterno">Apellido Paterno</label>
-        <input id="apellidoPaterno" type="text" formControlName="apellidoPaterno">
+        <input id="apellidoPaterno" type="text" formControlName="apellidoPaterno" [disabled]="isSubmitting">
       </div>
     </div>
 
     <div class="row">
       <div class="input-group">
         <label for="segundoNombre">Segundo Nombre (Opcional)</label>
-        <input id="segundoNombre" type="text" formControlName="segundoNombre">
+        <input id="segundoNombre" type="text" formControlName="segundoNombre" [disabled]="isSubmitting">
       </div>
       <div class="input-group">
         <label for="apellidoMaterno">Apellido Materno</label>
-        <input id="apellidoMaterno" type="text" formControlName="apellidoMaterno">
+        <input id="apellidoMaterno" type="text" formControlName="apellidoMaterno" [disabled]="isSubmitting">
       </div>
     </div>
     
     <!-- Dirección -->
     <div class="input-group">
       <label for="direccion">Dirección</label>
-      <input id="direccion" type="text" formControlName="direccion">
+      <input id="direccion" type="text" formControlName="direccion" [disabled]="isSubmitting">
     </div>
     
     <!-- Nombre de Usuario -->
     <div class="input-group">
       <label for="usuario">Nombre de Usuario</label>
-      <input id="usuario" type="text" formControlName="usuario" placeholder="Crea un alias único">
+      <input id="usuario" type="text" formControlName="usuario" placeholder="Crea un alias único" [disabled]="isSubmitting">
     </div>
 
     <!-- File Upload -->
@@ -61,6 +61,7 @@
         (change)="onFileSelected($event)"
         accept=".pdf,image/*"
         class="file-input"
+        [disabled]="isSubmitting"
       />
       <div class="file-name" *ngIf="selectedFile">
         {{ selectedFile.name }}
@@ -72,8 +73,13 @@
     <div *ngIf="successMessage" class="message success">{{ successMessage }}</div>
     <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
 
-    <button type="submit" [disabled]="isSubmitting">
+    <button type="submit" [disabled]="isSubmitting || !registrationForm.valid">
       {{ isSubmitting ? 'Guardando...' : 'Completar Registro' }}
+    </button>
+    
+    <!-- Debug button (remove in production) -->
+    <button type="button" (click)="testRequestFormat()" style="margin-top: 10px; background-color: #ff9800;" [disabled]="isSubmitting">
+      🔍 Debug Request Format
     </button>
   </form>
 </div> 
