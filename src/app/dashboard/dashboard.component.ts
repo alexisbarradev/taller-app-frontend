@@ -12,7 +12,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  
+ 
+  title = 'Dashboard';
   username: string = 'Invitado';
   userRole: string = '';
 
