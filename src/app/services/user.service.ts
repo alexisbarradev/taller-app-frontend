@@ -1,31 +1,24 @@
 import { Injectable } from '@angular/core';
-import { jwtDecode } from 'jwt-decode';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
+  
+  constructor(private authService: AuthService) {}
+
   getUsername(): string {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decoded: any = jwtDecode(token);
-        return decoded?.sub || 'Invitado';
-      } catch (err) {
-        return 'Invitado';
-      }
-    }
-    return 'Invitado';
+    return this.authService.getUsername();
   }
 
   getRole(): string {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decoded: any = jwtDecode(token);
-        return decoded?.role || '';
-      } catch (err) {
-        return '';
-      }
-    }
-    return '';
+    return this.authService.getRole();
+  }
+
+  getUserInfo(): any {
+    return this.authService.getUserInfo();
+  }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
   }
 } 

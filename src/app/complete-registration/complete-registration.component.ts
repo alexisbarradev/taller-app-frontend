@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-complete-registration',
@@ -24,7 +26,8 @@ export class CompleteRegistrationComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthService
   ) {
     this.registrationForm = this.fb.group({
       rut: ['', Validators.required],
@@ -42,6 +45,15 @@ export class CompleteRegistrationComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const email = params['email'];
       const name = params['name'] || '';
+      const token = params['token'];
+      
+      console.log('Complete Registration: Received params:', { email, name, hasToken: !!token });
+      
+      // Store token if provided (for OAuth2 flow)
+      if (token) {
+        console.log('Complete Registration: Token found in query params, storing it');
+        this.authService.setToken(token);
+      }
       
       this.registrationForm.patchValue({
         correo: email,
@@ -113,7 +125,7 @@ export class CompleteRegistrationComponent implements OnInit {
     }
     
     // Test request without actually sending
-    const testRequest = this.http.post('http://localhost:8080/api/registro-completo', formData);
+    const testRequest = this.http.post(`${environment.apiUrl}/registro-completo`, formData);
     console.log('Request object:', testRequest);
     
     // Check if Content-Type is being set automatically
@@ -158,15 +170,25 @@ export class CompleteRegistrationComponent implements OnInit {
         
         // Use the correct endpoint that handles multipart/form-data
         // IMPORTANT: Do NOT set Content-Type header - let browser handle it automatically
-        const response = await firstValueFrom(this.http.post('http://localhost:8080/api/registro-completo', formData));
+        const response: any = await firstValueFrom(this.http.post(`${environment.apiUrl}/registro-completo`, formData));
         
         console.log('Registration successful:', response);
-        this.successMessage = "¡Registro completado! Serás redirigido al dashboard.";
         
-        // Prevent any further submissions
-        this.registrationForm.disable();
-        
-        setTimeout(() => this.router.navigate(['/dashboard']), 2000);
+        // Check if we received a token and store it
+        if (response && response.token) {
+          this.authService.setToken(response.token);
+          console.log('JWT token stored successfully');
+          this.successMessage = "¡Registro completado! Serás redirigido al dashboard.";
+          
+          // Prevent any further submissions
+          this.registrationForm.disable();
+          
+          setTimeout(() => this.router.navigate(['/dashboard']), 2000);
+        } else {
+          console.error('No token received in response:', response);
+          this.errorMessage = "Error: No se recibió el token de autenticación. Por favor, contacta al administrador.";
+          this.isSubmitting = false;
+        }
 
       } catch (error: any) {
         console.error('Registration error:', error);

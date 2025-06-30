@@ -17,6 +17,5 @@ export class LoginComponent {
   loginWithMicrosoft(): void {
     window.location.href =
     'https://3.135.134.201:8443/oauth2/authorization/B2C_1_DuocUCDemoAzure_Login';
-
   }
 }
