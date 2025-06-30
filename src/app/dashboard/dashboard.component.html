@@ -1,1 +1,71 @@
-<p>dashboard works!</p>
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <div class="logo-area">
+      <span class="logo-icon">✔️</span>
+      <span class="logo-text">TradingThings</span>
+    </div>
+    <ul class="user-list">
+      <li><span class="user-icon">👤</span> {{ username }}</li>
+      <li *ngIf="userRole" class="user-role">Rol: {{ userRole }}</li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="social-icons">
+        <span> <i class="fa fa-facebook"></i> </span>
+        <span> <i class="fa fa-instagram"></i> </span>
+        <span> <i class="fa fa-twitter"></i> </span>
+      </div>
+      <div class="phone">Teléfono: 123-456-7890</div>
+      <button class="logout-btn" (click)="logout()">
+        <i class="fa fa-sign-out"></i> Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+  <div class="main-content">
+    <header class="main-header">
+      <div class="welcome-message">
+        <h2>Bienvenido, {{ username }}!</h2>
+        <p *ngIf="userRole">Rol: {{ userRole }}</p>
+      </div>
+      <div class="user-info">
+        <span>{{ username }}</span>
+        <span class="user-avatar"> <i class="fa fa-user"></i> </span>
+        <span class="user-number">2</span>
+      </div>
+    </header>
+    <div class="publish-btn-area">
+      <button class="publish-btn">Publicar producto</button>
+    </div>
+    <div class="products-grid">
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80" alt="Laptop">
+        <div class="product-title">Laptop</div>
+        <button class="see-more-btn">Ver más</button>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=400&q=80" alt="Sillón">
+        <div class="product-title">Sillón</div>
+        <button class="see-more-btn">Ver más</button>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=400&q=80" alt="Audifonos">
+        <div class="product-title">Audifonos</div>
+        <button class="see-more-btn">Ver más</button>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Espresso machine">
+        <div class="product-title">Espresso machine</div>
+        <button class="see-more-btn">Ver más</button>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Bicicleta">
+        <div class="product-title">Bicicleta</div>
+        <button class="see-more-btn">Ver más</button>
+      </div>
+      <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=400&q=80" alt="Smartwatch">
+        <div class="product-title">Smartwatch</div>
+        <button class="see-more-btn">Ver más</button>
+      </div>
+    </div>
+  </div>
+</div>
