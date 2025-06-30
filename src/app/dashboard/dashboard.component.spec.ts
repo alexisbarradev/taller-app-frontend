@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-
 import { DashboardComponent } from './dashboard.component';
+import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -9,13 +9,28 @@ describe('DashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardComponent],
+      imports: [ DashboardComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: { queryParams: { subscribe: () => {} } } }
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: {
+                get: () => null
+              }
+            },
+            queryParams: {
+              subscribe: () => {}
+            }
+          }
+        }
       ]
     })
     .compileComponents();
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -23,5 +38,14 @@ describe('DashboardComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have as title "Dashboard"', () => {
+    expect(component.title).toEqual('Dashboard');
+  });
+
+  it('should render title in h1', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h1')?.textContent).toContain('Dashboard');
   });
 });
