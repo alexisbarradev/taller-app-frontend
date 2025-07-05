@@ -142,64 +142,56 @@ export class CompleteRegistrationComponent implements OnInit {
     if (this.registrationForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
       this.errorMessage = null;
-
+  
       try {
         const formData = new FormData();
         const formValue = this.registrationForm.getRawValue();
-
+  
         // Append all form fields to FormData
         Object.keys(formValue).forEach(key => {
           formData.append(key, formValue[key]);
         });
-
+  
         // Append role, state, and provider
         formData.append('rol', JSON.stringify({ id: 2 })); // USER
         formData.append('estado', JSON.stringify({ id: 1 })); // ACTIVO
         formData.append('proveedorAutenticacion', 'azure');
-
+  
         // Append file if selected
         if (this.selectedFile) {
           formData.append('file', this.selectedFile, this.selectedFile.name);
         }
-        
-        // Debug: Log FormData contents (for development only)
-        console.log('FormData contents:');
-        for (let [key, value] of formData.entries()) {
-          console.log(`${key}:`, value);
-        }
-        
-        // Use the correct endpoint that handles multipart/form-data
-        // IMPORTANT: Do NOT set Content-Type header - let browser handle it automatically
-        const response: any = await firstValueFrom(this.http.post(`${environment.apiUrl}/registro-completo`, formData));
-        
+  
+        // 🔐 Obtener el token JWT
+        const token = this.authService.getToken();
+  
+        // 🛰️ Enviar la solicitud con el token en el header
+        const response: any = await firstValueFrom(
+          this.http.post(`${environment.apiUrl}/registro-completo`, formData, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {}
+          })
+        );
+  
         console.log('Registration successful:', response);
-        
-        // Check if we received a token and store it
+  
         if (response && response.token) {
           this.authService.setToken(response.token);
           console.log('JWT token stored successfully');
           this.successMessage = "¡Registro completado! Serás redirigido al dashboard.";
-          
-          // Prevent any further submissions
           this.registrationForm.disable();
-          
           setTimeout(() => this.router.navigate(['/dashboard']), 2000);
         } else {
           console.error('No token received in response:', response);
           this.errorMessage = "Error: No se recibió el token de autenticación. Por favor, contacta al administrador.";
           this.isSubmitting = false;
         }
-
+  
       } catch (error: any) {
         console.error('Registration error:', error);
-        
-        // Enhanced error handling with specific messages for duplicates
         if (error.status === 0) {
           this.errorMessage = 'Error de conexión: No se pudo conectar al servidor.';
         } else if (error.status === 400) {
           const errorMessage = error.error || 'Error desconocido';
-          
-          // Check for specific duplicate errors
           if (errorMessage.includes('RUT ya existe')) {
             this.errorMessage = 'El RUT ingresado ya está registrado en el sistema.';
           } else if (errorMessage.includes('correo electrónico ya está registrado')) {
@@ -222,10 +214,10 @@ export class CompleteRegistrationComponent implements OnInit {
         this.isSubmitting = false;
       }
     } else if (this.isSubmitting) {
-      // Prevent multiple submissions
       console.log('Form submission already in progress, ignoring duplicate request');
     } else {
       this.registrationForm.markAllAsTouched();
     }
   }
+  
 } 
