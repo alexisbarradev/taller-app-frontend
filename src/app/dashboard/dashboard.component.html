@@ -7,13 +7,13 @@
     </div>
     <ul class="user-list">
       <li><span class="user-icon">👤</span> {{ username }}</li>
-      <li *ngIf="userRole" class="user-role">Rol: {{ userRole }}</li>
+      <li *ngIf="userRole !== null" class="user-role">Rol: {{ getRoleLabel() }}</li>
     </ul>
     <div class="sidebar-footer">
       <div class="social-icons">
-        <span> <i class="fa fa-facebook"></i> </span>
-        <span> <i class="fa fa-instagram"></i> </span>
-        <span> <i class="fa fa-twitter"></i> </span>
+        <span><i class="fa fa-facebook"></i></span>
+        <span><i class="fa fa-instagram"></i></span>
+        <span><i class="fa fa-twitter"></i></span>
       </div>
       <div class="phone">Teléfono: 123-456-7890</div>
       <button class="logout-btn" (click)="logout()">
@@ -21,50 +21,46 @@
       </button>
     </div>
   </aside>
+
   <div class="main-content">
     <header class="main-header">
       <div class="welcome-message">
         <h2>Bienvenido, {{ username }}!</h2>
-        <p *ngIf="userRole">Rol: {{ userRole }}</p>
+        <p *ngIf="userRole !== null">Rol: {{ getRoleLabel() }}</p>
       </div>
       <div class="user-info">
         <span>{{ username }}</span>
-        <span class="user-avatar"> <i class="fa fa-user"></i> </span>
-        <span class="user-number">2</span>
+        <span class="user-avatar"><i class="fa fa-user"></i></span>
+        <span class="user-role-label">{{ getRoleLabel() }}</span>
       </div>
     </header>
-    <div class="publish-btn-area">
+
+    <!-- 👇 Solo visible si es administrador -->
+    <div class="publish-btn-area" *ngIf="isAdmin()">
       <button class="publish-btn">Publicar producto</button>
     </div>
+
+    <div style="color:red">
+      DEBUG: userRole = {{ userRole }} | typeof = {{ userRole?.constructor?.name }}
+    </div>
+    <div>
+      Fallback:
+      <span *ngIf="userRole == 1">Administrador</span>
+      <span *ngIf="userRole == 2">Usuario</span>
+      <span *ngIf="userRole != 1 && userRole != 2">Sin rol asignado</span>
+    </div>
+
     <div class="products-grid">
-      <div class="product-card">
-        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80" alt="Laptop">
-        <div class="product-title">Laptop</div>
-        <button class="see-more-btn">Ver más</button>
-      </div>
-      <div class="product-card">
-        <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=400&q=80" alt="Sillón">
-        <div class="product-title">Sillón</div>
-        <button class="see-more-btn">Ver más</button>
-      </div>
-      <div class="product-card">
-        <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=400&q=80" alt="Audifonos">
-        <div class="product-title">Audifonos</div>
-        <button class="see-more-btn">Ver más</button>
-      </div>
-      <div class="product-card">
-        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Espresso machine">
-        <div class="product-title">Espresso machine</div>
-        <button class="see-more-btn">Ver más</button>
-      </div>
-      <div class="product-card">
-        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Bicicleta">
-        <div class="product-title">Bicicleta</div>
-        <button class="see-more-btn">Ver más</button>
-      </div>
-      <div class="product-card">
-        <img src="https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=400&q=80" alt="Smartwatch">
-        <div class="product-title">Smartwatch</div>
+      <div class="product-card" *ngFor="let product of [
+        { title: 'Laptop', img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80' },
+        { title: 'Sillón', img: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=400&q=80' },
+        { title: 'Audifonos', img: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=400&q=80' },
+        { title: 'Espresso machine', img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80' },
+        { title: 'Bicicleta', img: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80' },
+        { title: 'Smartwatch', img: 'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=400&q=80' }
+      ]">
+        <img [src]="product.img" [alt]="product.title">
+        <div class="product-title">{{ product.title }}</div>
         <button class="see-more-btn">Ver más</button>
       </div>
     </div>
