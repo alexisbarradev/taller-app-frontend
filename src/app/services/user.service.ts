@@ -211,4 +211,62 @@ export class UserService {
       return null;
     }
   }
+
+  async eliminarUsuario(id: number): Promise<void> {
+    try {
+      const token = this.authService.getToken();
+      const response = await fetch(`${environment.apiUrl}/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error('No se pudo eliminar el usuario');
+      }
+    } catch (error) {
+      console.error('[UserService] eliminarUsuario error:', error);
+      throw error;
+    }
+  }
+
+  async getUsuarioPorId(id: number): Promise<Usuario | null> {
+    try {
+      const token = this.authService.getToken();
+      const response = await fetch(`${environment.apiUrl}/usuarios/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.ok) {
+        return await response.json();
+      }
+      return null;
+    } catch (error) {
+      console.error('[UserService] getUsuarioPorId error:', error);
+      return null;
+    }
+  }
+
+  async updateUsuario(id: number, usuario: any): Promise<void> {
+    try {
+      const token = this.authService.getToken();
+      const response = await fetch(`${environment.apiUrl}/usuarios/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(usuario)
+      });
+      if (!response.ok) {
+        throw new Error('No se pudo actualizar el usuario');
+      }
+    } catch (error) {
+      console.error('[UserService] updateUsuario error:', error);
+      throw error;
+    }
+  }
 }

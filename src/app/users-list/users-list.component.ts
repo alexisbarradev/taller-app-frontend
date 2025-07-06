@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService, Usuario } from '../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-users-list',
@@ -14,7 +15,7 @@ export class UsersListComponent implements OnInit {
   error: string = '';
   loading: boolean = true;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   async ngOnInit() {
     try {
@@ -24,5 +25,19 @@ export class UsersListComponent implements OnInit {
     } finally {
       this.loading = false;
     }
+  }
+
+  async eliminarUsuario(id: number) {
+    if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) return;
+    try {
+      await this.userService.eliminarUsuario(id);
+      this.users = this.users.filter(u => u.id !== id);
+    } catch (err: any) {
+      alert(err.message || 'Error al eliminar usuario');
+    }
+  }
+
+  editarUsuario(id: number) {
+    this.router.navigate(['/edit-user', id]);
   }
 } 
