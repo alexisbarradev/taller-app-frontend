@@ -79,8 +79,16 @@ export class AuthService {
    * Borra el token y redirige a login
    */
   logout(): void {
-    localStorage.removeItem('token');
-    this.msalService.logoutRedirect(); // también cierra sesión en Azure AD B2C
+    // Clear MSAL caches
+    this.msalService.instance.setActiveAccount(null);
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Redirect to Azure B2C logout endpoint
+    const authority = 'https://proyectouc.b2clogin.com/proyectouc.onmicrosoft.com/B2C_1_UserCreated';
+    const postLogoutRedirectUri = encodeURIComponent('http://localhost:4200/login');
+    const logoutUrl = `${authority}/oauth2/v2.0/logout?post_logout_redirect_uri=${postLogoutRedirectUri}`;
+    window.location.href = logoutUrl;
   }
 
   /**

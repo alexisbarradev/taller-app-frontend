@@ -57,7 +57,7 @@ export class AppComponent implements OnInit {
     
     try {
       const result = await this.msalService.acquireTokenSilent({
-        scopes: ['https://proyectouc.onmicrosoft.com/22c2ec51-5266-40ca-81fe-b40be13e8a23/demo.read'], // REEMPLAZA si es necesario
+        scopes: ['https://proyectouc.onmicrosoft.com/22c2ec51-5266-40ca-81fe-b40be13e8a23/demo.read'],
         account
       }).toPromise();
 
@@ -69,17 +69,28 @@ export class AppComponent implements OnInit {
       console.log('✅ Access Token obtenido exitosamente');
       localStorage.setItem('token', result.accessToken);
 
-      // If user is authenticated with Azure AD B2C, go to dashboard
-      // Backend user creation can happen asynchronously
-      console.log('✅ Usuario autenticado con Azure AD B2C, redirigiendo al dashboard');
-      this.router.navigate(['/dashboard']);
+      const userExists = await this.checkIfUserExists(account);
+      const emailToUse = account.username || 'no-email-found@example.com';
+
+      if (!userExists) {
+        console.log('🆕 Usuario nuevo detectado, redirigiendo a complete-registration');
+        this.router.navigate(['/complete-registration'], {
+          queryParams: {
+            email: emailToUse,
+            name: account.name || ''
+          }
+        });
+        return; // Stop further processing!
+      } else {
+        console.log('✅ Usuario existente, redirigiendo al dashboard');
+        this.router.navigate(['/dashboard']);
+      }
 
       // Optionally, try to create/update user in backend asynchronously
       this.tryCreateUserInBackend(account);
 
     } catch (err) {
       console.error('❌ Error al obtener token de acceso:', err);
-      console.log('🔄 Redirigiendo a complete-registration debido a error de autenticación');
       const emailToUse = account.username || 'no-email-found@example.com';
       this.router.navigate(['/complete-registration'], {
         queryParams: {

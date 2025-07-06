@@ -5,11 +5,12 @@ import { UserService } from '../services/user.service';
 import { CommonModule } from '@angular/common';
 import { MsalService } from '@azure/msal-angular';
 import { Subscription } from 'rxjs';
+import { UsersListComponent } from '../users-list/users-list.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UsersListComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -102,10 +103,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+ 
+
   logout(): void {
     this.authService.logout();
     this.userService.clearRol();
+  
+    // Forzar recarga para limpiar estado
+    window.location.href = '/';
   }
+  
 
   getRoleLabel(): string {
     const role = Number(this.userRole);
