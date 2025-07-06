@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'complete-registration', component: CompleteRegistrationComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'usuarios', component: UsersListComponent, canActivate: [authGuard] },
+  { path: 'edit-user/:id', loadComponent: () => import('./edit-user/edit-user.component').then(m => m.EditUserComponent), canActivate: [authGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
 ];
