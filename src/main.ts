@@ -30,7 +30,8 @@ async function main() {
         msalInstance.setActiveAccount(accounts[0]);
         console.log('✅ Cuenta restaurada:', accounts[0]);
       } else {
-        console.warn('⚠️ No hay cuenta activa aún.');
+        msalInstance.setActiveAccount(null); // 🔴 Limpia cuenta si no hay sesión activa
+        console.warn('⚠️ No hay cuenta activa. Se limpió sesión previa.');
       }
     }
 

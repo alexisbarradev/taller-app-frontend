@@ -1,0 +1,40 @@
+<h2>Lista de Usuarios</h2>
+<div *ngIf="loading">Cargando usuarios...</div>
+<div *ngIf="error" style="color:red">{{ error }}</div>
+<table *ngIf="!loading && !error && users.length > 0">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>RUT</th>
+      <th>Primer Nombre</th>
+      <th>Segundo Nombre</th>
+      <th>Apellido Paterno</th>
+      <th>Apellido Materno</th>
+      <th>Usuario</th>
+      <th>Correo</th>
+      <th>URL Contrato</th>
+      <th>Dirección</th>
+      <th>Proveedor Autenticación</th>
+      <th>Rol</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{ user.id }}</td>
+      <td>{{ user.rut }}</td>
+      <td>{{ user.primerNombre }}</td>
+      <td>{{ user.segundoNombre }}</td>
+      <td>{{ user.apellidoPaterno }}</td>
+      <td>{{ user.apellidoMaterno }}</td>
+      <td>{{ user.usuario }}</td>
+      <td>{{ user.correo }}</td>
+      <td>{{ user.urlContrato }}</td>
+      <td>{{ user.direccion }}</td>
+      <td>{{ user.proveedorAutenticacion }}</td>
+      <td>{{ user.rol.nombre }}</td>
+      <td>{{ user.estado.estado }}</td>
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="!loading && !error && users.length === 0">No hay usuarios registrados.</div> 

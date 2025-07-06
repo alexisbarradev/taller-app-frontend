@@ -4,6 +4,32 @@ import { AuthService } from './auth.service';
 import { MsalService } from '@azure/msal-angular';
 import { environment } from '../../environments/environment';
 
+export interface RolUsuario {
+  id: number;
+  nombre: string;
+}
+
+export interface EstadoUsuario {
+  id: number;
+  estado: string;
+}
+
+export interface Usuario {
+  id: number;
+  rut: string;
+  primerNombre: string;
+  segundoNombre: string;
+  apellidoPaterno: string;
+  apellidoMaterno: string;
+  usuario: string;
+  correo: string;
+  urlContrato: string;
+  direccion: string;
+  proveedorAutenticacion: string;
+  rol: RolUsuario;
+  estado: EstadoUsuario;
+}
+
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private rolUsuarioSubject = new BehaviorSubject<number | null>(null);
@@ -131,5 +157,27 @@ export class UserService {
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
+  }
+
+  async listarUsuarios(): Promise<Usuario[]> {
+    try {
+      const token = this.authService.getToken();
+      const response = await fetch(`${environment.apiUrl}/usuarios`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 401 || response.status === 403) {
+        throw new Error('No autorizado. Debe ser administrador para ver la lista de usuarios.');
+      }
+      if (!response.ok) {
+        throw new Error('Error al obtener la lista de usuarios');
+      }
+      return await response.json();
+    } catch (error: any) {
+      console.error('[UserService] listarUsuarios error:', error);
+      throw error;
+    }
   }
 }

@@ -20,7 +20,8 @@ export class LoginComponent {
 
   loginWithMicrosoft(): void {
     this.msalService.loginRedirect({
-      scopes: ['openid', 'profile', 'email']
+      scopes: ['openid', 'profile', 'email'],
+      prompt: 'login'
     });
   }
 }
