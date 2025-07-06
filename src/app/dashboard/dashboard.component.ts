@@ -82,11 +82,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       const email = this.userService.getUserEmailFromMSAL();
       this.userService.setUserName(name);
       this.userService.setUserEmail(email);
+      this.username = name;
       
       console.log('👤 Usuario:', name);
       console.log('📧 Email:', email);
 
-      // Get user role from backend and set in UserService
       if (email) {
         try {
           const backendRole = await this.userService.obtenerRolPorCorreo(email);
