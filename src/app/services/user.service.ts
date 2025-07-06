@@ -127,7 +127,19 @@ export class UserService {
     const account = this.msalService.instance.getActiveAccount();
     if (account && account.idTokenClaims) {
       const claims: any = account.idTokenClaims;
-      return claims.name || claims.given_name || claims.preferred_username || claims.email || 'Invitado';
+      // Prefer given_name, then email, then preferred_username, then name (if not 'unknown')
+      if (claims.given_name) {
+        return claims.given_name;
+      }
+      if (claims.email) {
+        return claims.email;
+      }
+      if (claims.preferred_username) {
+        return claims.preferred_username;
+      }
+      if (claims.name && claims.name !== 'unknown') {
+        return claims.name;
+      }
     }
     return 'Invitado';
   }
@@ -178,6 +190,25 @@ export class UserService {
     } catch (error: any) {
       console.error('[UserService] listarUsuarios error:', error);
       throw error;
+    }
+  }
+
+  async getUsuarioPorCorreo(correo: string): Promise<Usuario | null> {
+    try {
+      const token = this.authService.getToken();
+      const response = await fetch(`${environment.apiUrl}/usuarios/correo/${encodeURIComponent(correo)}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.ok) {
+        return await response.json();
+      }
+      return null;
+    } catch (error) {
+      console.error('[UserService] getUsuarioPorCorreo error:', error);
+      return null;
     }
   }
 }
