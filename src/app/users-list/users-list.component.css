@@ -8,34 +8,65 @@
   overflow-x: auto;
 }
 
+.users-list-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(25, 118, 210, 0.10);
+  padding: 2.5rem 2rem;
+  margin: 2.5rem auto;
+  max-width: 98vw;
+  width: 100%;
+}
+
+.users-list-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a237e;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  font-size: 0.97rem;
+  font-size: 0.92rem;
   background: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
+  min-width: 1100px;
 }
 
 th, td {
-  padding: 0.7rem 1rem;
+  padding: 1rem 1.2rem;
   text-align: left;
+  font-size: 0.92rem;
 }
 
 th {
   background: #f3f6fa;
-  color: #222;
-  font-weight: 600;
-  border-bottom: 2px solid #e0e0e0;
+  color: #16213e;
+  font-weight: 700;
+  border-bottom: 2.5px solid #e0e0e0;
+  font-size: 1.08rem;
+  letter-spacing: 0.5px;
 }
 
 tr {
   border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
 }
 
 tr:nth-child(even) {
   background: #f9fbfd;
+}
+
+tr:hover {
+  background: #e3e8f0;
 }
 
 tr:last-child {
@@ -61,14 +92,71 @@ button:hover {
   background-color: #1976d2;
   color: #fff;
   border: none;
-  padding: 0.4rem 1rem;
-  border-radius: 4px;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 700;
   margin-right: 0.5rem;
-  transition: background 0.2s;
-  font-size: 0.95rem;
+  transition: background 0.2s, box-shadow 0.2s;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
 }
 .edit-btn:hover {
   background-color: #0d47a1;
+}
+
+.delete-btn {
+  background-color: #e53935;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.2s, box-shadow 0.2s;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(229, 57, 53, 0.08);
+}
+.delete-btn:hover {
+  background-color: #b71c1c;
+}
+
+.no-users {
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+}
+
+.loading {
+  text-align: center;
+  color: #1976d2;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.error {
+  color: #d32f2f;
+  background: #ffebee;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #d32f2f;
+}
+
+@media (max-width: 900px) {
+  .users-list-card {
+    padding: 1.2rem 0.5rem;
+  }
+  table {
+    min-width: 800px;
+  }
+}
+
+.action-btn-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 } 

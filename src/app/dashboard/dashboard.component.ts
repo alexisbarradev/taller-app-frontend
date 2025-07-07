@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, UsersListComponent],
+  imports: [CommonModule, RouterModule, UsersListComponent, RouterOutlet],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -124,5 +124,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   isAdmin(): boolean {
     return this.userRole === 1;
+  }
+
+  hasActiveChildRoute(): boolean {
+    return this.router.url.includes('/dashboard/edit-user/') || this.router.url.includes('/dashboard/usuarios');
   }
 }
