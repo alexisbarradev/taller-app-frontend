@@ -13,7 +13,7 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'usuarios', component: UsersListComponent, canActivate: [authGuard] },
   { path: 'publicar-producto', component: PublicarProductoComponent, canActivate: [authGuard] },
-  // { path: 'mis-productos', component: MisProductosComponent, canActivate: [authGuard] },
+  { path: 'edit-user/:id', loadComponent: () => import('./edit-user/edit-user.component').then(m => m.EditUserComponent), canActivate: [authGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
 ];
