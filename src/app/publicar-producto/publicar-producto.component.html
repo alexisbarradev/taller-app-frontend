@@ -1,0 +1,75 @@
+<div class="dashboard-layout">
+  <h1 class="hidden-title">{{ title }}</h1>
+  <aside class="sidebar">
+    <div class="logo-area">
+      <span class="logo-icon">✔️</span>
+      <span class="logo-text">TradingThings</span>
+    </div>
+    <ul class="user-list">
+      <li><span class="user-icon">👤</span> {{ username }}</li>
+    </ul>
+    <div class="sidebar-links">
+      <nav>
+        <ul>
+          <li><a routerLink="/publicar-producto">Publicar productos</a></li>
+          <li><a routerLink="/mis-productos">Mis productos</a></li>
+          <li><a routerLink="/favoritos">Favoritos</a></li>
+          <li><a routerLink="/historial">Historial</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div class="social-icons">
+        <span><i class="fa fa-facebook"></i></span>
+        <span><i class="fa fa-instagram"></i></span>
+        <span><i class="fa fa-twitter"></i></span>
+      </div>
+      <div class="phone">Teléfono: 123-456-7890</div>
+      <button class="logout-btn" (click)="logout()">
+        <i class="fa fa-sign-out"></i> Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="main-header">
+      <div class="welcome-message">
+        <h2>Bienvenido, {{ username }}!</h2>
+      </div>
+      <div class="user-info">
+        <span>{{ username }}</span>
+        <span class="user-avatar"><i class="fa fa-user"></i></span>
+      </div>
+    </header>
+
+    <!-- Main content for publicar producto -->
+    <div class="publish-form-area">
+      <form class="product-form">
+        <h2 class="form-title">Publicar producto</h2>
+        <div class="form-group">
+          <label for="productName">Nombre del producto o servicio</label>
+          <input id="productName" name="productName" type="text" class="form-control" placeholder="Ej: Laptop, Silla, etc." required />
+        </div>
+        <div class="form-group">
+          <label for="description">Descripción</label>
+          <textarea id="description" name="description" class="form-control" rows="3" placeholder="Describe el producto o servicio" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="price">Evaluación monetaria</label>
+          <input id="price" name="price" type="number" class="form-control" placeholder="Ej: 10000" required />
+        </div>
+        <div class="form-group">
+          <label for="images">Adjuntar fotos del producto</label>
+          <div class="image-upload-box">
+            <input id="images" name="images" type="file" class="form-control-file" accept="image/*" multiple />
+            <div class="image-upload-label">
+              <i class="fa fa-image"></i>
+              <span>Adjuntar fotos del producto</span>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Publicar producto</button>
+      </form>
+    </div>
+  </div>
+</div> 
