@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { authGuard } from './services/auth.guard';
 import { CompleteRegistrationComponent } from './complete-registration/complete-registration.component';
 import { UsersListComponent } from './users-list/users-list.component';
+import { PublicarProductoComponent } from './publicar-producto/publicar-producto.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -17,6 +18,7 @@ export const routes: Routes = [
       { path: 'edit-user/:id', loadComponent: () => import('./edit-user/edit-user.component').then(m => m.EditUserComponent) }
     ]
   },
+  { path: 'publicar-producto', component: PublicarProductoComponent, canActivate: [authGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
 ];

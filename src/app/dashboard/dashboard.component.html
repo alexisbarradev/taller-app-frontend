@@ -7,8 +7,18 @@
     </div>
     <ul class="user-list">
       <li><span class="user-icon">👤</span> {{ username }}</li>
-      <li *ngIf="userRole !== null" class="user-role">Rol: {{ getRoleLabel() }}</li>
+      <!--li *ngIf="userRole !== null" class="user-role">Rol: {{ getRoleLabel() }}</li-->
     </ul>
+    <div class="sidebar-links">
+      <nav>
+        <ul>
+          <li><a routerLink="/publicar-producto">Publicar productos</a></li>
+          <li><a routerLink="/mis-productos">Mis productos</a></li>
+          <li><a routerLink="/favoritos">Favoritos</a></li>
+          <li><a routerLink="/historial">Historial</a></li>
+        </ul>
+      </nav>
+    </div>
     <div class="sidebar-footer">
       <div class="social-icons">
         <span><i class="fa fa-facebook"></i></span>
@@ -26,12 +36,12 @@
     <header class="main-header">
       <div class="welcome-message">
         <h2>Bienvenido, {{ username }}!</h2>
-        <p *ngIf="userRole !== null">Rol: {{ getRoleLabel() }}</p>
+        <!--p *ngIf="userRole !== null">Rol: {{ getRoleLabel() }}</p-->
       </div>
       <div class="user-info">
         <span>{{ username }}</span>
         <span class="user-avatar"><i class="fa fa-user"></i></span>
-        <span class="user-role-label">{{ getRoleLabel() }}</span>
+        <!--span class="user-role-label">{{ getRoleLabel() }}</span-->
       </div>
     </header>
 
