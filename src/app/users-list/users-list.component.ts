@@ -38,6 +38,6 @@ export class UsersListComponent implements OnInit {
   }
 
   editarUsuario(id: number) {
-    this.router.navigate(['/edit-user', id]);
+    this.router.navigate(['/dashboard/edit-user', id]);
   }
 } 

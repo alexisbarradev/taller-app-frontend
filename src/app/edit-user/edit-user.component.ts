@@ -26,7 +26,6 @@ export class EditUserComponent implements OnInit {
   fileError: string | null = null;
   currentUser: Usuario | null = null;
 
-  // Available roles and states
   roles: RolUsuario[] = [
     { id: 1, nombre: 'Administrador' },
     { id: 2, nombre: 'Usuario' }
@@ -56,8 +55,8 @@ export class EditUserComponent implements OnInit {
       direccion: ['', Validators.required],
       usuario: ['', Validators.required],
       correo: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-      rolId: ['', Validators.required], // Store only the ID
-      estadoId: ['', Validators.required], // Store only the ID
+      rolId: ['', Validators.required],
+      estadoId: ['', Validators.required],
       urlContrato: ['']
     });
 
@@ -78,8 +77,8 @@ export class EditUserComponent implements OnInit {
               direccion: user.direccion,
               usuario: user.usuario,
               correo: user.correo,
-              rolId: user.rol?.id || '', // Store only the ID
-              estadoId: user.estado?.id || '', // Store only the ID
+              rolId: user.rol?.id || '',
+              estadoId: user.estado?.id || '',
               urlContrato: user.urlContrato || ''
             });
           }
@@ -97,18 +96,10 @@ export class EditUserComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       const fileType = file.type;
-      
-      // Validate file type
+
       if (fileType.startsWith('image/') || fileType === 'application/pdf') {
         this.selectedFile = file;
         this.fileError = null;
-        
-        console.log('Selected file:', {
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          lastModified: file.lastModified
-        });
       } else {
         this.selectedFile = null;
         this.fileError = 'Por favor, selecciona un archivo PDF o una imagen.';
@@ -117,8 +108,13 @@ export class EditUserComponent implements OnInit {
   }
 
   async onSubmit() {
+    console.log('🔍 Updating user with ID:', this.userId);
+
+    const formValue = this.editForm.getRawValue(); // Incluye campos deshabilitados
+    console.log('📧 Correo value on submit:', formValue.correo);
+
     if (this.editForm.invalid || this.isSubmitting) return;
-    
+
     this.isSubmitting = true;
     this.errorMessage = '';
     this.successMessage = '';
@@ -126,42 +122,42 @@ export class EditUserComponent implements OnInit {
 
     try {
       const formData = new FormData();
-      const formValue = this.editForm.getRawValue();
 
-      // Append all form fields to FormData (except rolId, estadoId, and correo)
+      // Agregar todos los campos excepto rol, estado y correo
       Object.keys(formValue).forEach(key => {
-        if (key !== 'correo' && key !== 'rolId' && key !== 'estadoId') {
+        if (key !== 'rolId' && key !== 'estadoId' && key !== 'correo') {
           formData.append(key, formValue[key]);
         }
       });
 
-      // Append JSON strings for rol and estado with only the id field
+      // Agregar correo solo una vez, usando el valor de this.currentUser.correo
+      if (this.currentUser?.correo) {
+        formData.append('correo', this.currentUser.correo);
+      }
+
       const rolId = formValue.rolId;
       const estadoId = formValue.estadoId;
-      
+
       if (rolId) {
         formData.append('rol', JSON.stringify({ id: rolId }));
       } else {
         throw new Error('Rol no válido');
       }
-      
+
       if (estadoId) {
         formData.append('estado', JSON.stringify({ id: estadoId }));
       } else {
         throw new Error('Estado no válido');
       }
-      
+
       formData.append('proveedorAutenticacion', 'azure');
 
-      // Append file if selected
       if (this.selectedFile) {
         formData.append('file', this.selectedFile, this.selectedFile.name);
       }
 
-      // Get JWT token
       const token = this.authService.getToken();
 
-      // Send PUT request with multipart/form-data
       const response: any = await firstValueFrom(
         this.http.put(`${environment.apiUrl}/usuarios/${this.userId}`, formData, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
@@ -170,15 +166,14 @@ export class EditUserComponent implements OnInit {
 
       console.log('Update successful:', response);
       this.successMessage = 'Usuario actualizado correctamente';
-      setTimeout(() => this.router.navigate(['/usuarios']), 1200);
+      setTimeout(() => this.router.navigate(['/dashboard/usuarios']), 1200);
 
     } catch (error: any) {
       console.error('Update error:', error);
       if (error.status === 0) {
         this.errorMessage = 'Error de conexión: No se pudo conectar al servidor.';
       } else if (error.status === 400) {
-        const errorMessage = error.error?.mensaje || error.error || 'Error al actualizar usuario';
-        this.errorMessage = errorMessage;
+        this.errorMessage = error.error?.mensaje || error.error || 'Error al actualizar usuario';
       } else if (error.status === 401) {
         this.errorMessage = 'No autorizado. Por favor, inicia sesión nuevamente.';
       } else {
@@ -189,15 +184,13 @@ export class EditUserComponent implements OnInit {
     }
   }
 
-  // Helper method to get role name for display
   getRoleName(roleId: number): string {
     const role = this.roles.find(r => r.id === roleId);
     return role ? role.nombre : '';
   }
 
-  // Helper method to get state name for display
   getEstadoName(estadoId: number): string {
     const estado = this.estados.find(e => e.id === estadoId);
     return estado ? estado.estado : '';
   }
-} 
+}

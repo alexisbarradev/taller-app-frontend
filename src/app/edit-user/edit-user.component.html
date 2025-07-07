@@ -1,58 +1,82 @@
 <div *ngIf="loading" class="loading">Cargando usuario...</div>
 
 <div *ngIf="!loading" class="form-container">
-  <h2>Editar Usuario</h2>
-  <p>Modifica los datos del usuario según sea necesario.</p>
-  
+  <div class="logo-title-area">
+    <div class="logo-box">
+      <span class="logo-icon">📈</span>
+    </div>
+    <div class="brand-title">TradingThings</div>
+  </div>
+  <h2 class="form-title">Editar Usuario</h2>
   <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="edit-user-form">
     <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
     <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
 
-    <!-- Correo (deshabilitado) -->
+    <!-- Primer Nombre -->
     <div class="input-group">
-      <label for="correo">Correo Electrónico</label>
-      <input id="correo" type="email" formControlName="correo" readonly>
+      <label for="primerNombre">Primer Nombre</label>
+      <input id="primerNombre" type="text" formControlName="primerNombre" placeholder="Primer Nombre" [disabled]="isSubmitting">
+    </div>
+
+    <!-- Apellido Paterno -->
+    <div class="input-group">
+      <label for="apellidoPaterno">Apellido Paterno</label>
+      <input id="apellidoPaterno" type="text" formControlName="apellidoPaterno" placeholder="Apellido Paterno" [disabled]="isSubmitting">
+    </div>
+
+    <!-- Apellido Materno -->
+    <div class="input-group">
+      <label for="apellidoMaterno">Apellido Materno</label>
+      <input id="apellidoMaterno" type="text" formControlName="apellidoMaterno" placeholder="Apellido Materno" [disabled]="isSubmitting">
+    </div>
+
+    <!-- Segundo Nombre -->
+    <div class="input-group">
+      <label for="segundoNombre">Segundo Nombre (Opcional)</label>
+      <input id="segundoNombre" type="text" formControlName="segundoNombre" placeholder="Segundo Nombre (Opcional)" [disabled]="isSubmitting">
     </div>
 
     <!-- RUT -->
     <div class="input-group">
       <label for="rut">RUT</label>
-      <input id="rut" type="text" formControlName="rut" placeholder="Ej: 12345678-9" [disabled]="isSubmitting">
+      <input id="rut" type="text" formControlName="rut" placeholder="RUT" [disabled]="isSubmitting">
     </div>
 
-    <!-- Nombre y Apellidos -->
-    <div class="row">
-      <div class="input-group">
-        <label for="primerNombre">Primer Nombre</label>
-        <input id="primerNombre" type="text" formControlName="primerNombre" [disabled]="isSubmitting">
-      </div>
-      <div class="input-group">
-        <label for="apellidoPaterno">Apellido Paterno</label>
-        <input id="apellidoPaterno" type="text" formControlName="apellidoPaterno" [disabled]="isSubmitting">
+    <!-- File Upload -->
+    <div class="file-upload">
+      <label for="contractFile" class="file-label">
+        <i class="fa fa-upload"></i> Adjuntar prueba de dirección
+      </label>
+      <input 
+        type="file" 
+        id="contractFile" 
+        (change)="onFileSelected($event)"
+        accept=".pdf,image/*"
+        class="file-input"
+        [disabled]="isSubmitting"
+      />
+      <div class="file-name" *ngIf="selectedFile">
+        {{ selectedFile.name }}
       </div>
     </div>
+    <div class="message error" *ngIf="fileError">{{ fileError }}</div>
 
-    <div class="row">
-      <div class="input-group">
-        <label for="segundoNombre">Segundo Nombre (Opcional)</label>
-        <input id="segundoNombre" type="text" formControlName="segundoNombre" [disabled]="isSubmitting">
-      </div>
-      <div class="input-group">
-        <label for="apellidoMaterno">Apellido Materno</label>
-        <input id="apellidoMaterno" type="text" formControlName="apellidoMaterno" [disabled]="isSubmitting">
-      </div>
-    </div>
-    
     <!-- Dirección -->
     <div class="input-group">
       <label for="direccion">Dirección</label>
-      <input id="direccion" type="text" formControlName="direccion" [disabled]="isSubmitting">
+      <input id="direccion" type="text" formControlName="direccion" placeholder="Dirección" [disabled]="isSubmitting">
     </div>
-    
+
+    <!-- Correo electrónico (readonly) -->
+    <div class="input-group">
+      <label for="correo">Correo electrónico</label>
+      <input id="correo" type="email" formControlName="correo" placeholder="Correo electrónico" readonly>
+    </div>
+
     <!-- Nombre de Usuario -->
     <div class="input-group">
       <label for="usuario">Nombre de Usuario</label>
-      <input id="usuario" type="text" formControlName="usuario" [disabled]="isSubmitting">
+      <input id="usuario" type="text" formControlName="usuario" placeholder="Nombre de Usuario" [disabled]="isSubmitting">
     </div>
 
     <!-- Rol y Estado -->
@@ -72,25 +96,6 @@
         </select>
       </div>
     </div>
-
-    <!-- File Upload -->
-    <div class="file-upload">
-      <label for="contractFile" class="file-label">
-        <i class="fa fa-upload"></i> Subir contrato (PDF o imagen)
-      </label>
-      <input 
-        type="file" 
-        id="contractFile" 
-        (change)="onFileSelected($event)"
-        accept=".pdf,image/*"
-        class="file-input"
-        [disabled]="isSubmitting"
-      />
-      <div class="file-name" *ngIf="selectedFile">
-        {{ selectedFile.name }}
-      </div>
-    </div>
-    <div class="message error" *ngIf="fileError">{{ fileError }}</div>
 
     <button type="submit" [disabled]="isSubmitting || !editForm.valid">
       {{ isSubmitting ? 'Guardando...' : 'Guardar Cambios' }}
