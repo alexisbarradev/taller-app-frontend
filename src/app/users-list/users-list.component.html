@@ -1,6 +1,6 @@
 <div class="users-list-card">
   <h2 class="users-list-title">Lista de Usuarios</h2>
-  <div *ngIf="loading" class="loading">Cargando usuarios...</div>
+  <div *ngIf="loading" class="loading">Cargando Listado de usuarios...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
   <div class="table-responsive">
     <table *ngIf="!loading && !error && users.length > 0">
