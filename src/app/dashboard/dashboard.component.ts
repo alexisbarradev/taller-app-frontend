@@ -6,11 +6,12 @@ import { CommonModule } from '@angular/common';
 import { MsalService } from '@azure/msal-angular';
 import { Subscription } from 'rxjs';
 import { UsersListComponent } from '../users-list/users-list.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, UsersListComponent],
+  imports: [CommonModule, RouterModule, UsersListComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
