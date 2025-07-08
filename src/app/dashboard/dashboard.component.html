@@ -2,8 +2,10 @@
   <h1 class="hidden-title">{{ title }}</h1>
   <aside class="sidebar">
     <div class="logo-area">
-      <span class="logo-icon">✔️</span>
-      <span class="logo-text">TradingThings</span>
+      <a routerLink="/dashboard" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+        <span class="logo-icon">✔️</span>
+        <span class="logo-text">TradingThings</span>
+      </a>
     </div>
     <ul class="user-list">
       <li><span class="user-icon">👤</span> {{ username }}</li>
@@ -53,7 +55,7 @@
       <!-- Only show publish button and products grid if NOT admin -->
       <div *ngIf="!isAdmin()">
         <div class="publish-btn-area">
-          <button class="publish-btn">Publicar producto</button>
+          <button class="publish-btn" routerLink="/publicar-producto">Publicar producto</button>
         </div>
         <div class="products-grid">
           <div class="product-card" *ngFor="let product of [
