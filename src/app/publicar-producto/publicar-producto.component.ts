@@ -41,6 +41,8 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    const token = this.authService.getToken();
+    console.log('[PublicarProducto] Token en ngOnInit:', token);
     // Obtener estados desde el backend de publicaciones
     this.http.get<any[]>(`${environment.publicacionesApiUrl}/estados`)
       .subscribe(data => this.estados = data);
@@ -58,15 +60,18 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Obtener datos del usuario autenticado para idAutor
-    const token = this.authService.getToken();
-    if (token) {
-      try {
-        const user: any = this.authService.getUserInfo();
-        this.publicacion.idAutor = user?.id || null;
-      } catch (e) {
-        this.publicacion.idAutor = null;
-      }
+    // Extraer el email del usuario autenticado desde el token (revisar emails[0] y email)
+    const user = this.authService.getUserInfo();
+    console.log('[PublicarProducto] userInfo extraído:', user);
+    const email = user?.email || (Array.isArray(user?.emails) && user.emails[0]) || undefined;
+    console.log('[PublicarProducto] Email extraído:', email);
+    if (email) {
+      this.userService.getUsuarioIdPorCorreo(email).then(id => {
+        console.log('[PublicarProducto] id obtenido para publicación:', id);
+        this.publicacion.idAutor = id;
+      }).catch(err => {
+        console.error('[PublicarProducto] Error al obtener id por correo:', err);
+      });
     }
   }
 
@@ -75,6 +80,7 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(estado: number): void {
+    console.log('[PublicarProducto] idAutor antes de enviar:', this.publicacion.idAutor);
     const token = this.authService.getToken();
     if (!token) {
       alert('Debes iniciar sesión');
@@ -102,7 +108,7 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
         } else {
           alert('¡Guardado como borrador!');
         }
-        this.router.navigate(['/mis-productos']);
+        this.router.navigate(['/dashboard/mis-productos']);
       },
       error: err => {
         alert('Error al publicar: ' + (err.error?.message || err.statusText));

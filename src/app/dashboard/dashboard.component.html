@@ -15,7 +15,7 @@
       <nav>
         <ul>
           <li><a routerLink="/publicar-producto">Publicar productos</a></li>
-          <li><a routerLink="/mis-productos">Mis productos</a></li>
+          <li><a routerLink="/dashboard/mis-productos">Mis productos</a></li>
           <li><a routerLink="/favoritos">Favoritos</a></li>
           <li><a routerLink="/historial">Historial</a></li>
         </ul>
@@ -58,17 +58,12 @@
           <button class="publish-btn" routerLink="/publicar-producto">Publicar producto</button>
         </div>
         <div class="products-grid">
-          <div class="product-card" *ngFor="let product of [
-            { title: 'Laptop', img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80' },
-            { title: 'Sillón', img: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=400&q=80' },
-            { title: 'Audifonos', img: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=400&q=80' },
-            { title: 'Espresso machine', img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80' },
-            { title: 'Bicicleta', img: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80' },
-            { title: 'Smartwatch', img: 'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=400&q=80' }
-          ]">
-            <img [src]="product.img" [alt]="product.title">
-            <div class="product-title">{{ product.title }}</div>
-            <button class="see-more-btn">Ver más</button>
+          <div *ngIf="loadingProducts" class="loading">Cargando publicaciones...</div>
+          <div *ngIf="errorProducts" class="error">{{ errorProducts }}</div>
+          <div class="product-card" *ngFor="let product of products">
+            <img *ngIf="product.imagenUrl" [src]="product.imagenUrl" [alt]="product.titulo">
+            <div class="product-title">{{ product.titulo }}</div>
+            <a class="see-more-btn" [routerLink]="['/dashboard/producto', product.id]">Ver más</a>
           </div>
         </div>
       </div>

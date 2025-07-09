@@ -7,6 +7,8 @@ import { MsalService } from '@azure/msal-angular';
 import { Subscription } from 'rxjs';
 import { UsersListComponent } from '../users-list/users-list.component';
 import { RouterModule } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +24,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   userRole: number | null = null;
   userEmail: string = '';
   private subscriptions = new Subscription();
+  products: any[] = [];
+  loadingProducts = false;
+  errorProducts: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,7 +34,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private userService: UserService,
     private msalService: MsalService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +76,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // Update user information
     this.updateUserInfo();
+    this.fetchProducts();
   }
 
   ngOnDestroy(): void {
@@ -104,6 +111,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  fetchProducts(): void {
+    this.loadingProducts = true;
+    this.errorProducts = null;
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    this.http.get<any[]>(`${environment.publicacionesApiUrl}/publicaciones`, { headers }).subscribe({
+      next: data => {
+        this.products = data;
+        console.log('[Dashboard] Publicaciones recibidas:', this.products);
+        this.loadingProducts = false;
+      },
+      error: err => {
+        this.errorProducts = 'Error al cargar publicaciones.';
+        this.loadingProducts = false;
+      }
+    });
+  }
+
  
 
   logout(): void {
@@ -127,6 +152,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   hasActiveChildRoute(): boolean {
-    return this.router.url.includes('/dashboard/edit-user/') || this.router.url.includes('/dashboard/usuarios');
+    // Solo muestra el contenido principal si la URL es exactamente /dashboard
+    return this.router.url !== '/dashboard';
   }
 }

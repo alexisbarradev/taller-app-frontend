@@ -149,7 +149,17 @@ export class UserService {
     const account = this.msalService.instance.getActiveAccount();
     if (account && account.idTokenClaims) {
       const claims: any = account.idTokenClaims;
-      return claims.email || claims.preferred_username || '';
+      // Buscar en emails (array), email, preferred_username, upn, name
+      const email =
+        (Array.isArray(claims.emails) && claims.emails.length > 0 && claims.emails[0]) ||
+        claims.email ||
+        claims.preferred_username ||
+        claims.upn ||
+        claims.name ||
+        '';
+      console.log('[UserService] Claims disponibles:', claims);
+      console.log('[UserService] Email extraído:', email);
+      return email;
     }
     return '';
   }
@@ -208,6 +218,27 @@ export class UserService {
       return null;
     } catch (error) {
       console.error('[UserService] getUsuarioPorCorreo error:', error);
+      return null;
+    }
+  }
+
+  // Nuevo método solo para obtener el id por correo
+  async getUsuarioIdPorCorreo(correo: string): Promise<number | null> {
+    try {
+      const token = this.authService.getToken();
+      const response = await fetch(`${environment.apiUrl}/usuarios/id-por-correo/${encodeURIComponent(correo)}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data.id || null;
+      }
+      return null;
+    } catch (error) {
+      console.error('[UserService] getUsuarioIdPorCorreo error:', error);
       return null;
     }
   }
