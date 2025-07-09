@@ -2,8 +2,10 @@
   <h1 class="hidden-title">{{ title }}</h1>
   <aside class="sidebar">
     <div class="logo-area">
-      <span class="logo-icon">✔️</span>
-      <span class="logo-text">TradingThings</span>
+      <a routerLink="/dashboard" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+        <span class="logo-icon">✔️</span>
+        <span class="logo-text">TradingThings</span>
+      </a>
     </div>
     <ul class="user-list">
       <li><span class="user-icon">👤</span> {{ username }}</li>
@@ -12,7 +14,7 @@
       <nav>
         <ul>
           <li><a routerLink="/publicar-producto">Publicar productos</a></li>
-          <li><a routerLink="/mis-productos">Mis productos</a></li>
+          <li><a routerLink="/dashboard/mis-productos">Mis productos</a></li>
           <li><a routerLink="/favoritos">Favoritos</a></li>
           <li><a routerLink="/historial">Historial</a></li>
         </ul>
@@ -44,32 +46,33 @@
 
     <!-- Main content for publicar producto -->
     <div class="publish-form-area">
-      <form class="product-form">
-        <h2 class="form-title">Publicar producto</h2>
-        <div class="form-group">
-          <label for="productName">Nombre del producto o servicio</label>
-          <input id="productName" name="productName" type="text" class="form-control" placeholder="Ej: Laptop, Silla, etc." required />
-        </div>
-        <div class="form-group">
-          <label for="description">Descripción</label>
-          <textarea id="description" name="description" class="form-control" rows="3" placeholder="Describe el producto o servicio" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="price">Evaluación monetaria</label>
-          <input id="price" name="price" type="number" class="form-control" placeholder="Ej: 10000" required />
-        </div>
-        <div class="form-group">
-          <label for="images">Adjuntar fotos del producto</label>
-          <div class="image-upload-box">
-            <input id="images" name="images" type="file" class="form-control-file" accept="image/*" multiple />
-            <div class="image-upload-label">
-              <i class="fa fa-image"></i>
-              <span>Adjuntar fotos del producto</span>
-            </div>
+      <div class="form-container">
+        <h2 class="form-title">{{ title }}</h2>
+        <form class="product-form">
+          <div class="form-group">
+            <label for="titulo">Título:</label>
+            <input id="titulo" name="titulo" [(ngModel)]="publicacion.titulo" required class="form-control" />
           </div>
-        </div>
-        <button type="submit" class="submit-btn">Publicar producto</button>
-      </form>
+          <div class="form-group">
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" [(ngModel)]="publicacion.descripcion" required class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="precio">Precio:</label>
+            <input id="precio" name="precio" type="number" [(ngModel)]="publicacion.precio" required class="form-control" />
+          </div>
+          <!--
+          <div class="form-group">
+            <label for="foto">Foto:</label>
+            <input id="foto" name="foto" type="file" (change)="onFileSelected($event)" class="form-control" />
+          </div>
+          -->
+          <div class="form-group" style="display: flex; gap: 1rem; justify-content: center;">
+            <button type="button" class="submit-btn" (click)="onSubmit(1)">Publicar</button>
+            <button type="button" class="submit-btn draft" (click)="onSubmit(2)">Guardar como borrador</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div> 

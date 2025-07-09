@@ -19,6 +19,7 @@ export class AuthService {
    */
   isLoggedIn(): boolean {
     const token = this.getToken();
+    console.log('[isLoggedIn] Token:', token);
     if (!token) return false;
 
     try {
@@ -30,7 +31,7 @@ export class AuthService {
       }
       return true;
     } catch (error) {
-      console.error('Error decoding token:', error);
+      console.error('[isLoggedIn] Error decoding token:', error, 'Token:', token);
       this.logout();
       return false;
     }

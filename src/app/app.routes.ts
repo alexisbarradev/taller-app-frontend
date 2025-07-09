@@ -15,7 +15,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'usuarios', component: UsersListComponent },
-      { path: 'edit-user/:id', loadComponent: () => import('./edit-user/edit-user.component').then(m => m.EditUserComponent) }
+      { path: 'edit-user/:id', loadComponent: () => import('./edit-user/edit-user.component').then(m => m.EditUserComponent) },
+      { path: 'mis-productos', loadComponent: () => import('./user-products/user-products.component').then(m => m.UserProductsComponent) },
+      { path: 'producto/:id', loadComponent: () => import('./product-view/product-view.component').then(m => m.ProductViewComponent) }
     ]
   },
   { path: 'publicar-producto', component: PublicarProductoComponent, canActivate: [authGuard] },

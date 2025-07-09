@@ -3,16 +3,17 @@ import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { environment } from '../environments/environment';
 import { UserService } from './services/user.service';
+import { LoaderComponent } from './services/loader.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, LoaderComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'mainfrontend';
+  title = 'taller-app-frontend';
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private msalService = inject(MsalService);

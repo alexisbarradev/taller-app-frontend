@@ -1,0 +1,14 @@
+<div class="product-view-card">
+  <h2 class="product-view-title">Detalle del Producto</h2>
+  <div *ngIf="loading" class="loading">Cargando producto...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="!loading && !error && product" class="product-view-details">
+    <img *ngIf="product.imagenUrl" [src]="product.imagenUrl" [alt]="product.titulo" class="product-view-img">
+    <div class="product-view-field"><strong>Título:</strong> {{ product.titulo }}</div>
+    <div class="product-view-field"><strong>Descripción:</strong> {{ product.descripcion }}</div>
+    <div class="product-view-field"><strong>Precio:</strong> {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>
+    <div class="product-view-field"><strong>Estado:</strong> {{ product.estado?.estado }}</div>
+    <div class="product-view-field"><strong>Autor:</strong> {{ product.autor?.nombre || product.autor?.usuario || product.idAutor }}</div>
+    <!-- Agrega más campos si es necesario -->
+  </div>
+</div> 

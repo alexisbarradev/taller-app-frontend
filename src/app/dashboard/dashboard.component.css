@@ -204,20 +204,25 @@
   color: #22314a;
 }
 .see-more-btn {
-  background: #fff;
-  color: #22314a;
-  border: 2px solid #22314a;
-  border-radius: 8px;
-  padding: 8px 0;
+  display: block;
   width: 100%;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-.see-more-btn:hover {
   background: #22314a;
   color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 1rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.see-more-btn:hover {
+  background: #1a2536;
+  color: #fff;
+  text-decoration: none;
 }
 
 @media (max-width: 900px) {
