@@ -1,78 +1,31 @@
-<div class="dashboard-layout">
-  <h1 class="hidden-title">{{ title }}</h1>
-  <aside class="sidebar">
-    <div class="logo-area">
-      <a routerLink="/dashboard" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
-        <span class="logo-icon">✔️</span>
-        <span class="logo-text">TradingThings</span>
-      </a>
-    </div>
-    <ul class="user-list">
-      <li><span class="user-icon">👤</span> {{ username }}</li>
-    </ul>
-    <div class="sidebar-links">
-      <nav>
-        <ul>
-          <li><a routerLink="/publicar-producto">Publicar productos</a></li>
-          <li><a routerLink="/dashboard/mis-productos">Mis productos</a></li>
-          <li><a routerLink="/favoritos">Favoritos</a></li>
-          <li><a routerLink="/historial">Historial</a></li>
-        </ul>
-      </nav>
-    </div>
-    <div class="sidebar-footer">
-      <div class="social-icons">
-        <span><i class="fa fa-facebook"></i></span>
-        <span><i class="fa fa-instagram"></i></span>
-        <span><i class="fa fa-twitter"></i></span>
+<div class="publish-form-area">
+  <div class="form-container">
+    <h2 class="form-title">{{ title }}</h2>
+    <form class="product-form">
+      <div class="form-group">
+        <label for="titulo">Título:</label>
+        <input id="titulo" name="titulo" [(ngModel)]="publicacion.titulo" required class="form-control" />
       </div>
-      <div class="phone">Teléfono: 123-456-7890</div>
-      <button class="logout-btn" (click)="logout()">
-        <i class="fa fa-sign-out"></i> Cerrar Sesión
-      </button>
-    </div>
-  </aside>
-
-  <div class="main-content">
-    <header class="main-header">
-      <div class="welcome-message">
-        <h2>Bienvenido, {{ username }}!</h2>
+      <div class="form-group">
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" [(ngModel)]="publicacion.descripcion" required class="form-control"></textarea>
       </div>
-      <div class="user-info">
-        <span>{{ username }}</span>
-        <span class="user-avatar"><i class="fa fa-user"></i></span>
+      <div class="form-group">
+        <label for="precio">Precio:</label>
+        <input id="precio" name="precio" type="number" [(ngModel)]="publicacion.precio" required class="form-control" />
       </div>
-    </header>
-
-    <!-- Main content for publicar producto -->
-    <div class="publish-form-area">
-      <div class="form-container">
-        <h2 class="form-title">{{ title }}</h2>
-        <form class="product-form">
-          <div class="form-group">
-            <label for="titulo">Título:</label>
-            <input id="titulo" name="titulo" [(ngModel)]="publicacion.titulo" required class="form-control" />
-          </div>
-          <div class="form-group">
-            <label for="descripcion">Descripción:</label>
-            <textarea id="descripcion" name="descripcion" [(ngModel)]="publicacion.descripcion" required class="form-control"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="precio">Precio:</label>
-            <input id="precio" name="precio" type="number" [(ngModel)]="publicacion.precio" required class="form-control" />
-          </div>
-          <!--
-          <div class="form-group">
-            <label for="foto">Foto:</label>
-            <input id="foto" name="foto" type="file" (change)="onFileSelected($event)" class="form-control" />
-          </div>
-          -->
-          <div class="form-group" style="display: flex; gap: 1rem; justify-content: center;">
-            <button type="button" class="submit-btn" (click)="onSubmit(1)">Publicar</button>
-            <button type="button" class="submit-btn draft" (click)="onSubmit(2)">Guardar como borrador</button>
-          </div>
-        </form>
+      <div class="form-group">
+        <label for="foto">Foto:</label>
+        <input id="foto" name="foto" type="file" accept="image/*" (change)="onFileSelected($event)" class="form-control" />
       </div>
-    </div>
+      <div class="form-group" *ngIf="fotoPreview">
+        <label>Previsualización:</label>
+        <img [src]="fotoPreview" alt="Previsualización de la foto" style="max-width: 200px; max-height: 200px; display: block; margin: 0 auto; border: 1px solid #ccc; border-radius: 8px;" />
+      </div>
+      <div class="form-group" style="display: flex; gap: 1rem; justify-content: center;">
+        <button type="button" class="submit-btn" (click)="onSubmit(1)">Publicar</button>
+        <button type="button" class="submit-btn draft" (click)="onSubmit(2)">Guardar como borrador</button>
+      </div>
+    </form>
   </div>
 </div> 

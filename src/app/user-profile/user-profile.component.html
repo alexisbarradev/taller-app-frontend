@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Mis datos</h2>
+<div mat-dialog-content>
+  <div class="profile-row"><strong>Nombre:</strong> {{ data.primerNombre }} {{ data.apellidoPaterno }}</div>
+  <div class="profile-row"><strong>Correo:</strong> {{ data.correo }}</div>
+  <div class="profile-row"><strong>RUT:</strong> {{ data.rut }}</div>
+  <div class="profile-row"><strong>Dirección:</strong> {{ data.direccion }}</div>
+  <div class="profile-row"><strong>Usuario:</strong> {{ data.usuario }}</div>
+  <div class="profile-row"><strong>Rol:</strong> {{ data.rol?.nombre }}</div>
+  <div class="profile-row"><strong>Estado:</strong> {{ data.estado?.estado }}</div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cerrar</button>
+</div> 

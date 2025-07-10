@@ -1,14 +1,94 @@
-<div class="product-view-card">
-  <h2 class="product-view-title">Detalle del Producto</h2>
+<div class="product-view-card unified-product-card">
+  <div class="product-view-header">
+    <h2 class="product-view-title">Detalle del Producto</h2>
+  </div>
   <div *ngIf="loading" class="loading">Cargando producto...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
-  <div *ngIf="!loading && !error && product" class="product-view-details">
-    <img *ngIf="product.imagenUrl" [src]="product.imagenUrl" [alt]="product.titulo" class="product-view-img">
-    <div class="product-view-field"><strong>Título:</strong> {{ product.titulo }}</div>
-    <div class="product-view-field"><strong>Descripción:</strong> {{ product.descripcion }}</div>
-    <div class="product-view-field"><strong>Precio:</strong> {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>
-    <div class="product-view-field"><strong>Estado:</strong> {{ product.estado?.estado }}</div>
-    <div class="product-view-field"><strong>Autor:</strong> {{ product.autor?.nombre || product.autor?.usuario || product.idAutor }}</div>
-    <!-- Agrega más campos si es necesario -->
+  <div *ngIf="!loading && !error && product" class="product-detail-unified">
+    <div class="product-image">
+      <img [src]="product.urlFoto || 'assets/no-image.png'" [alt]="product.titulo">
+    </div>
+    <div class="product-info">
+      <div class="product-title-main">{{ product.titulo }}</div>
+      <div class="product-description-subtitle">{{ product.descripcion }}</div>
+      <div class="product-detail-row"><strong>Precio:</strong> {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>
+      <div class="product-detail-row">
+        <strong>Estado:</strong>
+        <span [ngClass]="{'estado-publicado': (product.estado?.estado || product.estado) === 'Publicado'}">
+          {{ product.estado?.estado || product.estado?.nombre || product.estado || 'Sin estado' }}
+        </span>
+      </div>
+      <div class="product-detail-row"><strong>Autor:</strong> {{ autorNombre }}</div>
+    </div>
+  </div>
+
+  <!-- Sección de Comentarios -->
+  <div *ngIf="!loading && !error && product" class="comments-section">
+    <h3 class="comments-title">Comentarios ({{ comments.length }})</h3>
+    
+    <!-- Formulario para nuevo comentario -->
+    <div class="new-comment-form">
+      <h4>Agregar Comentario</h4>
+      <div class="form-group">
+        <label for="commentText">Tu comentario:</label>
+        <textarea 
+          id="commentText"
+          [(ngModel)]="newComment.texto" 
+          placeholder="Escribe tu comentario aquí..."
+          rows="3"
+          class="comment-textarea"
+          [disabled]="submittingComment">
+        </textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Valoración:</label>
+        <div class="rating-stars">
+          <span 
+            *ngFor="let star of [1,2,3,4,5]; let i = index"
+            (click)="newComment.valoracion = star"
+            [class.selected]="star <= newComment.valoracion"
+            class="star">
+            {{ star <= newComment.valoracion ? '★' : '☆' }}
+          </span>
+          <span class="rating-text">{{ newComment.valoracion }}/5</span>
+        </div>
+      </div>
+      
+      <div *ngIf="commentError" class="error-message">{{ commentError }}</div>
+      
+      <button 
+        (click)="submitComment()" 
+        [disabled]="submittingComment || !newComment.texto.trim()"
+        class="submit-comment-btn">
+        {{ submittingComment ? 'Enviando...' : 'Enviar Comentario' }}
+      </button>
+    </div>
+
+    <!-- Lista de comentarios -->
+    <div class="comments-list">
+      <div *ngIf="loadingComments" class="loading">Cargando comentarios...</div>
+      <div *ngIf="!loadingComments && comments.length === 0" class="no-comments">
+        No hay comentarios aún. ¡Sé el primero en comentar!
+      </div>
+      
+      <div *ngFor="let comment of comments" class="comment-item">
+        <div class="comment-header">
+          <div class="comment-author">{{ getNombreAutorComentario(comment.idAutor) }}</div>
+          <div class="comment-date">{{ formatDate(comment.fechaCreacion) }}</div>
+        </div>
+        
+        <div class="comment-rating">
+          <span 
+            *ngFor="let star of getStars(comment.valoracion)" 
+            class="star-display">
+            {{ star }}
+          </span>
+          <span class="rating-text-display">{{ comment.valoracion }}/5</span>
+        </div>
+        
+        <div class="comment-text">{{ comment.texto }}</div>
+      </div>
+    </div>
   </div>
 </div> 
