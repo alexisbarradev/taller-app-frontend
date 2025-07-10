@@ -32,6 +32,8 @@ export class ProductViewComponent implements OnInit {
     valoracion: 5
   };
   submittingComment = false;
+  editingCommentId: number | null = null;
+  editedComment = { texto: '', valoracion: 5 };
 
   constructor(
     private route: ActivatedRoute,
@@ -196,5 +198,57 @@ export class ProductViewComponent implements OnInit {
 
   goBackToUserProducts() {
     this.router.navigate(['/dashboard/mis-productos']);
+  }
+
+  isAdmin(): boolean {
+    const rol = this.userService.getRol();
+    return ((typeof rol === 'number' && rol === 1) || (typeof rol === 'object' && rol && (rol as any).id === 1)) ? true : false;
+  }
+
+  borrarComentario(id: number) {
+    if (!this.isAdmin()) return;
+    if (confirm('¿Seguro que deseas borrar este comentario?')) {
+      const token = localStorage.getItem('token');
+      const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
+      this.http.delete(`${environment.publicacionesApiUrl}/comentarios/${id}`, { headers }).subscribe({
+        next: () => {
+          this.comments = this.comments.filter(c => c.id !== id);
+          alert('Comentario eliminado correctamente');
+        },
+        error: () => alert('Error al eliminar el comentario')
+      });
+    }
+  }
+
+  editarComentario(comment: any) {
+    if (!this.isAdmin()) return;
+    this.editingCommentId = comment.id;
+    this.editedComment = { texto: comment.texto, valoracion: comment.valoracion };
+  }
+
+  cancelarEdicionComentario() {
+    this.editingCommentId = null;
+    this.editedComment = { texto: '', valoracion: 5 };
+  }
+
+  guardarEdicionComentario(comment: any) {
+    if (!this.isAdmin()) return;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
+    const datosActualizados = {
+      ...comment,
+      texto: this.editedComment.texto,
+      valoracion: this.editedComment.valoracion
+    };
+    this.http.put<any>(`${environment.publicacionesApiUrl}/comentarios/${comment.id}`, datosActualizados, { headers }).subscribe({
+      next: (updated) => {
+        // Actualizar el comentario en la lista
+        const idx = this.comments.findIndex(c => c.id === comment.id);
+        if (idx !== -1) this.comments[idx] = updated;
+        this.cancelarEdicionComentario();
+        alert('Comentario editado correctamente');
+      },
+      error: () => alert('Error al editar el comentario')
+    });
   }
 } 

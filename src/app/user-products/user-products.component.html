@@ -7,12 +7,9 @@
   </div>
   <div *ngIf="!loading && !error && products.length > 0" class="products-grid">
     <div class="product-card" *ngFor="let product of products">
-      <img [src]="product.urlFoto || 'assets/no-image.png'" [alt]="product.titulo" class="product-img">
       <div class="product-title">{{ product.titulo }}</div>
       <div class="product-description">{{ product.descripcion }}</div>
       <div class="product-price">Precio: {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>
-      <div class="product-id">ID: {{ product.id }}</div>
-      <div class="product-state">Estado: {{ product.estado?.nombre || product.estado || 'Sin estado' }}</div>
       <a class="see-more-btn" [routerLink]="['/dashboard/producto', product.id]">Ver más</a>
     </div>
   </div>
