@@ -3,18 +3,39 @@
   <aside class="sidebar">
     <div class="logo-area">
       <a routerLink="/dashboard" style="text-decoration: none; color: inherit; display: flex; align-items: center;" (click)="navigateToDashboard()">
-        <span class="logo-icon">✔️</span>
+        <!--span class="logo-icon">✔️</span-->
         <span class="logo-text">TradingThings</span>
       </a>
     </div>
-    <ul class="user-list">
+    <!--ul class="user-list">
       <li *ngIf="isAdmin()"><span class="user-icon">👤</span> Administrador</li>
-      <li *ngIf="!isAdmin()"><span class="user-icon">👤</span> Usuario</li>
-    </ul>
+      <li *ngIf="!isAdmin()"><span class="user-icon">👤</span> {{ username }}</li>
+    </ul-->
     <div class="sidebar-links">
       <nav>
         <ul>
+          <li><a routerLink="/dashboard" (click)="navigateToDashboard()">Home</a></li>
           <li *ngIf="isAdmin()">
+
+            <a routerLink="/dashboard/todos-los-productos">Productos</a>
+          </li>
+          <li *ngIf="isAdmin()">
+            <a routerLink="/dashboard/usuarios">Usuarios</a>
+          </li>
+          <li><a routerLink="/dashboard/publicar-producto">Publicar productos</a></li>
+           <li *ngIf="!isAdmin()">
+            <a routerLink="/dashboard/mis-productos">Mis productos</a>
+          </li>
+          <li><a routerLink="/mi-cuenta">Mi cuenta</a></li>
+          <li><a routerLink="/ayuda">Ayuda</a></li>
+          <li><a routerLink="/ayuda"(click)="logout()">Cerrar Sesión</a></li>
+          <div class="social-icons">
+            <span><i class="fa fa-facebook"></i></span>
+            <span><i class="fa fa-instagram"></i></span>
+            <span><i class="fa fa-twitter"></i></span>
+            <span><i class="fa fa-phone"></i></span>
+          </div>
+
             <a routerLink="/dashboard/usuarios">Listado de usuarios</a>
           </li>
           <li *ngIf="isAdmin()">
@@ -22,30 +43,22 @@
           </li>
           <li><a routerLink="/dashboard/publicar-producto">Publicar productos</a></li>
           <li><a routerLink="/dashboard/mis-productos">Mis productos</a></li>
+
         </ul>
       </nav>
     </div>
     <div class="sidebar-footer">
-      <div class="social-icons">
-        <span><i class="fa fa-facebook"></i></span>
-        <span><i class="fa fa-instagram"></i></span>
-        <span><i class="fa fa-twitter"></i></span>
-      </div>
-      <div class="phone">Teléfono: 123-456-7890</div>
-      <button class="logout-btn" (click)="logout()">
-        <i class="fa fa-sign-out"></i> Cerrar Sesión
-      </button>
     </div>
   </aside>
 
   <div class="main-content">
     <header class="main-header">
       <div class="welcome-message">
-        <h2>Bienvenido, {{ username }}!</h2>
+        <!--h2>Bienvenido, {{ username }}!</h2-->
       </div>
       <div class="user-info">
         <span class="user-avatar"><i class="fa fa-user"></i></span>
-        <span class="user-link" (click)="openUserModal()" style="cursor:pointer; color:#1976d2; font-weight:bold;">Mis datos</span>
+        <span class="user-link" (click)="openUserModal()" style="cursor:pointer; color:white; font-weight:bold;"> {{ isAdmin() ? "Admin" : username }}</span>
       </div>
     </header>
 
