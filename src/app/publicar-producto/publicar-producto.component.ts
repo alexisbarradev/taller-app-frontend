@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
@@ -20,6 +20,7 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
   title = 'Publicar Producto';
   username: string = 'Invitado';
   userRole: string = '';
+  isAdmin: boolean = false;
   private subscriptions = new Subscription();
 
   // Modelo para el formulario
@@ -32,10 +33,13 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
   };
 
   estados: any[] = []; // Lista de estados para el select
+  foto: File | null = null;
+  fotoPreview: string | ArrayBuffer | null = null;
 
   constructor(
     private http: HttpClient,
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService,
     private userService: UserService
   ) {}
@@ -72,11 +76,37 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
       }).catch(err => {
         console.error('[PublicarProducto] Error al obtener id por correo:', err);
       });
+
+      // Obtener información completa del usuario para verificar el rol
+      this.userService.getUsuarioPorCorreo(email).then(usuario => {
+        if (usuario && usuario.rol) {
+          this.userRole = usuario.rol.nombre;
+          this.isAdmin = this.userRole.toLowerCase() === 'administrador';
+          console.log('[PublicarProducto] Rol detectado:', this.userRole, 'isAdmin:', this.isAdmin);
+        }
+      }).catch(err => {
+        console.error('[PublicarProducto] Error al obtener información del usuario:', err);
+      });
     }
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.foto = input.files[0];
+      const reader = new FileReader();
+      reader.onload = e => {
+        this.fotoPreview = reader.result;
+      };
+      reader.readAsDataURL(this.foto);
+    } else {
+      this.foto = null;
+      this.fotoPreview = null;
+    }
   }
 
   onSubmit(estado: number): void {
@@ -87,28 +117,29 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Armar el body como espera el backend
-    const body = {
-      titulo: this.publicacion.titulo,
-      descripcion: this.publicacion.descripcion,
-      precio: this.publicacion.precio,
-      idAutor: this.publicacion.idAutor,
-      estado: { id: estado }
-      // foto: this.publicacion.foto // Pendiente: enviar foto
-    };
+    const formData = new FormData();
+    formData.append('titulo', this.publicacion.titulo);
+    formData.append('descripcion', this.publicacion.descripcion);
+    formData.append('precio', this.publicacion.precio?.toString() || '');
+    formData.append('idAutor', this.publicacion.idAutor?.toString() || '');
+    formData.append('estadoId', estado.toString());
+    if (this.foto) {
+      formData.append('file', this.foto);
+    }
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
+      // 'Content-Type' no se debe establecer manualmente para FormData
     });
 
-    this.http.post(`${environment.publicacionesApiUrl}/publicaciones`, body, { headers }).subscribe({
+    this.http.post(`${environment.publicacionesApiUrl}/publicaciones`, formData, { headers }).subscribe({
       next: resp => {
         if (estado === 1) {
           alert('¡Producto publicado!');
         } else {
           alert('¡Guardado como borrador!');
         }
-        this.router.navigate(['/dashboard/mis-productos']);
+        this.router.navigate(['../mis-productos'], { relativeTo: this.route });
       },
       error: err => {
         alert('Error al publicar: ' + (err.error?.message || err.statusText));

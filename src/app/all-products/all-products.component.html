@@ -1,0 +1,15 @@
+<div class="all-products-container">
+  <h2>Listado global de productos</h2>
+  <div *ngIf="loading" class="loading">Cargando productos...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div class="products-grid">
+    <div class="product-card" *ngFor="let product of products">
+      <img [src]="product.urlFoto || 'assets/no-image.png'" [alt]="product.titulo">
+      <div class="product-title">{{ product.titulo }}</div>
+      <div class="product-description">{{ product.descripcion }}</div>
+      <div class="product-price">Precio: {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>
+      <div class="product-estado">Estado: {{ product.estado?.nombre || product.estado }}</div>
+      <a class="see-more-btn" [routerLink]="['/dashboard/producto', product.id]">Ver más</a>
+    </div>
+  </div>
+</div> 

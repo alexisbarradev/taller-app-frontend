@@ -15,12 +15,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'usuarios', component: UsersListComponent },
+      { path: 'publicar-producto', component: PublicarProductoComponent },
       { path: 'edit-user/:id', loadComponent: () => import('./edit-user/edit-user.component').then(m => m.EditUserComponent) },
       { path: 'mis-productos', loadComponent: () => import('./user-products/user-products.component').then(m => m.UserProductsComponent) },
-      { path: 'producto/:id', loadComponent: () => import('./product-view/product-view.component').then(m => m.ProductViewComponent) }
+      { path: 'producto/:id', loadComponent: () => import('./product-view/product-view.component').then(m => m.ProductViewComponent) },
+      { path: 'todos-los-productos', loadComponent: () => import('./all-products/all-products.component').then(m => m.AllProductsComponent) }
     ]
   },
-  { path: 'publicar-producto', component: PublicarProductoComponent, canActivate: [authGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
 ];

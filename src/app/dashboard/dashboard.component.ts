@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { UserService } from '../services/user.service';
+import { UserService, Usuario } from '../services/user.service';
 import { CommonModule } from '@angular/common';
 import { MsalService } from '@azure/msal-angular';
 import { Subscription } from 'rxjs';
@@ -9,11 +9,17 @@ import { UsersListComponent } from '../users-list/users-list.component';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { AllProductsComponent } from '../all-products/all-products.component';
+
+// Helper fuera de la clase
+function isRoleObject(role: any): role is { id: number } {
+  return role && typeof role === 'object' && 'id' in role;
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, UsersListComponent, RouterOutlet],
+  imports: [CommonModule, RouterModule, UsersListComponent, RouterOutlet, AllProductsComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -27,10 +33,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   products: any[] = [];
   loadingProducts = false;
   errorProducts: string | null = null;
+  showUserModal = false;
+  usuario: Usuario | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    public router: Router,
     private authService: AuthService,
     private userService: UserService,
     private msalService: MsalService,
@@ -85,28 +93,74 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private async updateUserInfo(): Promise<void> {
     if (this.authService.isLoggedIn()) {
-      // Set user name and email in UserService
-      const name = this.userService.getUserNameFromMSAL();
       const email = this.userService.getUserEmailFromMSAL();
-      this.userService.setUserName(name);
       this.userService.setUserEmail(email);
-      this.username = name;
-      
-      console.log('👤 Usuario:', name);
-      console.log('📧 Email:', email);
+      this.userEmail = email;
+
+      let usuario: Usuario | null = null;
+      let idUsuario: number | null = null;
+
+      console.log('DASHBOARD: email usado para buscar usuario:', email);
 
       if (email) {
         try {
-          const backendRole = await this.userService.obtenerRolPorCorreo(email);
-          // setRol is already called inside obtenerRolPorCorreo
-          console.log('DASHBOARD: backendRole =', backendRole, typeof backendRole);
+          usuario = await this.userService.getUsuarioPorCorreo(email);
+          this.usuario = usuario;
+          console.log('DASHBOARD: usuario obtenido por correo:', usuario);
+          if (usuario && usuario.id) {
+            idUsuario = usuario.id;
+            localStorage.setItem('userId', idUsuario.toString());
+          }
         } catch (error) {
-          console.error('❌ Error al obtener rol:', error);
-          this.userService.setRol(null);
+          usuario = null;
+          this.usuario = null;
+          console.error('DASHBOARD: error al obtener usuario por correo:', error);
         }
       }
+
+      // Si no se pudo obtener por correo, intenta por ID guardado
+      const userIdLS = localStorage.getItem('userId');
+      console.log('DASHBOARD: userId en localStorage:', userIdLS);
+      if (!usuario && userIdLS) {
+        const id = Number(userIdLS);
+        try {
+          usuario = await this.userService.getUsuarioPorId(id);
+          console.log('DASHBOARD: usuario obtenido por ID:', usuario);
+        } catch (error) {
+          usuario = null;
+          console.error('DASHBOARD: error al obtener usuario por ID:', error);
+        }
+      }
+
+      let nombre = '';
+      if (usuario) {
+        if (usuario.primerNombre && usuario.apellidoPaterno) {
+          nombre = `${usuario.primerNombre} ${usuario.apellidoPaterno}`;
+        } else if (usuario.primerNombre) {
+          nombre = usuario.primerNombre;
+        } else if (usuario.apellidoPaterno) {
+          nombre = usuario.apellidoPaterno;
+        } else if (usuario.correo) {
+          nombre = usuario.correo;
+        } else {
+          nombre = 'Invitado';
+        }
+      } else {
+        nombre = email || 'Invitado';
+      }
+      this.username = nombre;
+      this.userService.setUserName(nombre);
+      console.log('DASHBOARD: nombre final asignado:', nombre);
+
+      try {
+        const backendRole = await this.userService.obtenerRolPorCorreo(email);
+        console.log('DASHBOARD: backendRole =', backendRole, typeof backendRole);
+      } catch (error) {
+        this.userService.setRol(null);
+      }
     } else {
-      console.error('Dashboard: User not authenticated');
+      this.username = 'Invitado';
+      this.userService.setUserName('Invitado');
       this.authService.logout();
     }
   }
@@ -116,7 +170,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.errorProducts = null;
     const token = this.authService.getToken();
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-    this.http.get<any[]>(`${environment.publicacionesApiUrl}/publicaciones`, { headers }).subscribe({
+    this.http.get<any[]>(`${environment.publicacionesApiUrl}/publicaciones/publicados`, { headers }).subscribe({
       next: data => {
         this.products = data;
         console.log('[Dashboard] Publicaciones recibidas:', this.products);
@@ -141,18 +195,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
   
 
   getRoleLabel(): string {
-    const role = Number(this.userRole);
-    if (role === 1) return 'Administrador';
-    if (role === 2) return 'Usuario';
+    let roleId = this.userRole;
+    if (isRoleObject(this.userRole)) {
+      roleId = this.userRole.id;
+    }
+    if (roleId === 1) return 'Administrador';
+    if (roleId === 2) return 'Usuario';
     return 'Sin rol asignado';
   }
 
   isAdmin(): boolean {
+    if (isRoleObject(this.userRole)) {
+      return this.userRole.id === 1;
+    }
     return this.userRole === 1;
   }
 
   hasActiveChildRoute(): boolean {
     // Solo muestra el contenido principal si la URL es exactamente /dashboard
     return this.router.url !== '/dashboard';
+  }
+
+  navigateToDashboard(): void {
+    if (this.isAdmin()) {
+      this.router.navigate(['/dashboard/usuarios']);
+    } else {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  openUserModal() {
+    this.showUserModal = true;
+  }
+  closeUserModal() {
+    this.showUserModal = false;
   }
 }

@@ -40,7 +40,7 @@ export class UserProductsComponent implements OnInit {
       console.log('[UserProducts] id obtenido para consulta:', id);
       if (!id) throw new Error('User id not found.');
       if (!token) throw new Error('No token available.');
-      const response = await fetch(`${environment.publicacionesApiUrl}/publicaciones/autor/${id}/estado/1`, {
+      const response = await fetch(`${environment.publicacionesApiUrl}/publicaciones/autor/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
