@@ -83,4 +83,68 @@ h2 {
   border-radius: 4px;
   margin-bottom: 1rem;
   border-left: 4px solid #d32f2f;
+}
+.admin-product-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.edit-btn {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+.edit-btn:hover {
+  background-color: #125ea2;
+}
+.delete-btn {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+.delete-btn:hover {
+  background-color: #b71c1c;
+}
+.edit-btn .icon, .delete-btn .icon {
+  margin-right: 6px;
+}
+.edit-inline-block {
+  background: #f5f7fa;
+  border: 1.5px solid #1976d2;
+  border-radius: 8px;
+  padding: 16px 12px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+}
+.edit-inline-block .edit-input {
+  margin-bottom: 10px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  border: 1px solid #bdbdbd;
+  font-size: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.edit-inline-block .admin-product-actions {
+  flex-direction: row;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
 } 

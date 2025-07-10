@@ -33,6 +33,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private rolSub: Subscription | null = null;
   showUserModal = false;
   usuario: Usuario | null = null;
+  cargandoRol = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,16 +50,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.userService.rolUsuario$.subscribe(role => {
         this.userRole = role;
         this.cdr.detectChanges();
-        // Redirección automática tras login SOLO si el rol ya está definido
-        if (this.router.url === '/dashboard' && this.userRole !== null) {
-          console.log('[Dashboard] Redirección automática, userRole:', this.userRole);
-          if (this.isAdmin()) {
-            console.log('[Dashboard] Es admin, redirigiendo a /dashboard/usuarios');
-            this.router.navigate(['/dashboard/usuarios']);
-          } else {
-            console.log('[Dashboard] No es admin, redirigiendo a /dashboard/todos-los-productos');
-            this.router.navigate(['/dashboard/todos-los-productos']);
-          }
+        if (this.userRole !== null) {
+          this.cargandoRol = false;
+        }
+        // Redirección automática para administradores a /dashboard/usuarios, salvo que ya estén ahí
+        if (this.userRole !== null && this.isAdmin() && this.router.url !== '/dashboard/usuarios') {
+          console.log('[Dashboard] Es admin, forzando redirección a /dashboard/usuarios');
+          this.router.navigate(['/dashboard/usuarios']);
+        } else if (this.userRole !== null && !this.isAdmin() && this.router.url === '/dashboard') {
+          console.log('[Dashboard] No es admin, redirigiendo a /dashboard/todos-los-productos');
+          this.router.navigate(['/dashboard/todos-los-productos']);
         }
         // Ya no llamar a this.fetchProducts();
       })

@@ -1,83 +1,78 @@
-<div class="dashboard-layout">
-  <h1 class="hidden-title">{{ title }}</h1>
-  <aside class="sidebar">
-    <div class="logo-area">
-      <a routerLink="/dashboard" style="text-decoration: none; color: inherit; display: flex; align-items: center;" (click)="navigateToDashboard()">
-        <!--span class="logo-icon">✔️</span-->
-        <span class="logo-text">TradingThings</span>
-      </a>
-    </div>
-    <!--ul class="user-list">
-      <li *ngIf="isAdmin()"><span class="user-icon">👤</span> Administrador</li>
-      <li *ngIf="!isAdmin()"><span class="user-icon">👤</span> {{ username }}</li>
-    </ul-->
-    <div class="sidebar-links">
-      <nav>
-        <ul>
-          <li><a routerLink="/dashboard" (click)="navigateToDashboard()">Home</a></li>
-          <li *ngIf="isAdmin()">
+<div *ngIf="cargandoRol" class="loader-container">
+  <div class="spinner"></div>
+  <p>Cargando...</p>
+</div>
 
-            <a routerLink="/dashboard/todos-los-productos">Productos</a>
-          </li>
-          <li *ngIf="isAdmin()">
-            <a routerLink="/dashboard/usuarios">Usuarios</a>
-          </li>
-          <li><a routerLink="/dashboard/publicar-producto">Publicar productos</a></li>
-           <li *ngIf="!isAdmin()">
-            <a routerLink="/dashboard/mis-productos">Mis productos</a>
-          </li>
-          <li><a routerLink="/mi-cuenta">Mi cuenta</a></li>
-          <li><a routerLink="/ayuda">Ayuda</a></li>
-          <li><a routerLink="/ayuda"(click)="logout()">Cerrar Sesión</a></li>
-          <div class="social-icons">
-            <span><i class="fa fa-facebook"></i></span>
-            <span><i class="fa fa-instagram"></i></span>
-            <span><i class="fa fa-twitter"></i></span>
-            <span><i class="fa fa-phone"></i></span>
-          </div>
-
-            <a routerLink="/dashboard/usuarios">Listado de usuarios</a>
-          </li>
-          <li *ngIf="isAdmin()">
-            <a routerLink="/dashboard/todos-los-productos">Listado de productos</a>
-          </li>
-          <li><a routerLink="/dashboard/publicar-producto">Publicar productos</a></li>
-          <li><a routerLink="/dashboard/mis-productos">Mis productos</a></li>
-
-        </ul>
-      </nav>
-    </div>
-    <div class="sidebar-footer">
-    </div>
-  </aside>
-
-  <div class="main-content">
-    <header class="main-header">
-      <div class="welcome-message">
-        <!--h2>Bienvenido, {{ username }}!</h2-->
+<div *ngIf="!cargandoRol">
+  <div class="dashboard-layout">
+    <h1 class="hidden-title">{{ title }}</h1>
+    <aside class="sidebar">
+      <div class="logo-area">
+        <a routerLink="/dashboard" style="text-decoration: none; color: inherit; display: flex; align-items: center;" (click)="navigateToDashboard()">
+          <span class="logo-icon">✔️</span>
+          <span class="logo-text">TradingThings</span>
+        </a>
       </div>
-      <div class="user-info">
-        <span class="user-avatar"><i class="fa fa-user"></i></span>
-        <span class="user-link" (click)="openUserModal()" style="cursor:pointer; color:white; font-weight:bold;"> {{ isAdmin() ? "Admin" : username }}</span>
-      </div>
-    </header>
 
-    <!-- Modal de usuario -->
-    <div *ngIf="showUserModal" class="user-modal-overlay">
-      <div class="user-modal-box">
-        <h3>Datos del usuario</h3>
-        <div *ngIf="usuario">
-          <p><strong>Nombre:</strong> {{ usuario.primerNombre }} {{ usuario.segundoNombre }} {{ usuario.apellidoPaterno }} {{ usuario.apellidoMaterno }}</p>
-          <p><strong>Correo:</strong> {{ usuario.correo }}</p>
-          <p><strong>Usuario:</strong> {{ usuario.usuario }}</p>
-          <p><strong>Rol:</strong> {{ usuario.rol.nombre }}</p>
-          <p><strong>Estado:</strong> {{ usuario.estado.estado }}</p>
+      <ul class="user-list">
+        <li *ngIf="isAdmin()"><span class="user-icon">👤</span> Administrador</li>
+        <li *ngIf="!isAdmin()"><span class="user-icon">👤</span> {{ username }}</li>
+      </ul>
+
+      <div class="sidebar-links">
+        <nav>
+          <ul>
+            <li><a routerLink="/dashboard" (click)="navigateToDashboard()">Home</a></li>
+            <li *ngIf="isAdmin()"><a routerLink="/dashboard/usuarios">Listado de usuarios</a></li>
+            <li *ngIf="isAdmin()"><a routerLink="/dashboard/todos-los-productos">Listado de productos</a></li>
+            <li><a routerLink="/dashboard/publicar-producto">Publicar productos</a></li>
+            <li *ngIf="!isAdmin()"><a routerLink="/dashboard/mis-productos">Mis productos</a></li>
+            <li><a routerLink="/mi-cuenta">Mi cuenta</a></li>
+            <li><a routerLink="/ayuda">Ayuda</a></li>
+            <li><a routerLink="/ayuda" (click)="logout()">Cerrar Sesión</a></li>
+          </ul>
+        </nav>
+        <div class="social-icons">
+          <span><i class="fa fa-facebook"></i></span>
+          <span><i class="fa fa-instagram"></i></span>
+          <span><i class="fa fa-twitter"></i></span>
+          <span><i class="fa fa-phone"></i></span>
         </div>
-        <button (click)="closeUserModal()" style="background:#1976d2; color:white; border:none; padding:8px 16px; border-radius:4px; margin-top:10px;">Cerrar</button>
       </div>
-    </div>
 
-    <!-- Router outlet for child routes -->
-    <router-outlet></router-outlet>
+      <div class="sidebar-footer"></div>
+    </aside>
+
+    <div class="main-content">
+      <header class="main-header">
+        <div class="welcome-message">
+          <h2>Bienvenido, {{ username }}!</h2>
+        </div>
+        <div class="user-info">
+          <span class="user-avatar"><i class="fa fa-user"></i></span>
+          <span class="user-link" (click)="openUserModal()" style="cursor:pointer; color:white; font-weight:bold;">
+            {{ isAdmin() ? "Admin" : username }}
+          </span>
+        </div>
+      </header>
+
+      <!-- Modal de usuario -->
+      <div *ngIf="showUserModal" class="user-modal-overlay">
+        <div class="user-modal-box">
+          <h3>Datos del usuario</h3>
+          <div *ngIf="usuario">
+            <p><strong>Nombre:</strong> {{ usuario.primerNombre }} {{ usuario.segundoNombre }} {{ usuario.apellidoPaterno }} {{ usuario.apellidoMaterno }}</p>
+            <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+            <p><strong>Usuario:</strong> {{ usuario.usuario }}</p>
+            <p><strong>Rol:</strong> {{ usuario.rol.nombre }}</p>
+            <p><strong>Estado:</strong> {{ usuario.estado.estado }}</p>
+          </div>
+          <button (click)="closeUserModal()" style="background:#1976d2; color:white; border:none; padding:8px 16px; border-radius:4px; margin-top:10px;">Cerrar</button>
+        </div>
+      </div>
+
+      <!-- Router outlet for child routes -->
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>

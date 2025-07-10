@@ -77,17 +77,26 @@
           <div class="comment-author">{{ getNombreAutorComentario(comment.idAutor) }}</div>
           <div class="comment-date">{{ formatDate(comment.fechaCreacion) }}</div>
         </div>
-        
         <div class="comment-rating">
-          <span 
-            *ngFor="let star of getStars(comment.valoracion)" 
-            class="star-display">
-            {{ star }}
-          </span>
+          <span *ngFor="let star of getStars(comment.valoracion)" class="star-display">{{ star }}</span>
           <span class="rating-text-display">{{ comment.valoracion }}/5</span>
         </div>
-        
-        <div class="comment-text">{{ comment.texto }}</div>
+        <div class="comment-text" *ngIf="editingCommentId !== comment.id">{{ comment.texto }}</div>
+        <div *ngIf="isAdmin() && editingCommentId === comment.id" class="edit-comment-inline">
+          <textarea [(ngModel)]="editedComment.texto" rows="2" class="edit-comment-textarea"></textarea>
+          <div class="edit-rating-stars">
+            <span *ngFor="let star of [1,2,3,4,5]" (click)="editedComment.valoracion = star" [class.selected]="star <= editedComment.valoracion" class="star">{{ star <= editedComment.valoracion ? '★' : '☆' }}</span>
+            <span class="rating-text">{{ editedComment.valoracion }}/5</span>
+          </div>
+          <div class="edit-actions">
+            <button (click)="guardarEdicionComentario(comment)" class="edit-btn"><span class="icon">💾</span>Guardar</button>
+            <button (click)="cancelarEdicionComentario()" class="delete-btn"><span class="icon">✖️</span>Cancelar</button>
+          </div>
+        </div>
+        <div *ngIf="isAdmin() && editingCommentId !== comment.id" class="admin-comment-actions">
+          <button (click)="editarComentario(comment)" class="edit-btn"><span class="icon">✏️</span>Editar</button>
+          <button (click)="borrarComentario(comment.id)" class="delete-btn"><span class="icon">🗑️</span>Borrar</button>
+        </div>
       </div>
     </div>
   </div>

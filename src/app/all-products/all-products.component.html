@@ -8,8 +8,24 @@
       <div class="product-title">{{ product.titulo }}</div>
       <div class="product-description">{{ product.descripcion }}</div>
       <div class="product-price">Precio: {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>
-      <div class="product-estado">Estado: {{ product.estado?.nombre || product.estado }}</div>
+      <div *ngIf="isAdmin()" class="product-estado">Estado: {{ product.estado?.nombre || product.estado }}</div>
       <a class="see-more-btn" [routerLink]="['/dashboard/producto', product.id]">Ver más</a>
+      <div *ngIf="isAdmin() && editingProductId === product.id" class="edit-inline-block">
+        <input [(ngModel)]="editedProduct.titulo" placeholder="Título" class="edit-input" />
+        <textarea [(ngModel)]="editedProduct.descripcion" placeholder="Descripción" class="edit-input"></textarea>
+        <input type="number" [(ngModel)]="editedProduct.precio" placeholder="Precio" class="edit-input" />
+        <select [(ngModel)]="editedProduct.estado" class="edit-input">
+          <option *ngFor="let estado of estados" [ngValue]="estado">{{ estado.nombre }}</option>
+        </select>
+        <div class="admin-product-actions">
+          <button (click)="guardarEdicionPublicacion(product)" class="edit-btn"><span class="icon">💾</span>Guardar</button>
+          <button (click)="cancelarEdicionPublicacion()" class="delete-btn"><span class="icon">✖️</span>Cancelar</button>
+        </div>
+      </div>
+      <div *ngIf="isAdmin() && editingProductId !== product.id" class="admin-product-actions">
+        <button (click)="editarPublicacion(product)" class="edit-btn"><span class="icon">✏️</span>Editar</button>
+        <button (click)="borrarPublicacion(product.id)" class="delete-btn"><span class="icon">🗑️</span>Borrar</button>
+      </div>
     </div>
   </div>
 </div> 
