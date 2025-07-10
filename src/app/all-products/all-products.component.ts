@@ -112,7 +112,7 @@ export class AllProductsComponent implements OnInit {
       titulo: this.editedProduct.titulo,
       descripcion: this.editedProduct.descripcion,
       precio: this.editedProduct.precio,
-      estado: this.editedProduct.estado
+      estado: { id: this.editedProduct.estado } // <-- Enviar como objeto
     };
     console.log('Enviando al backend:', datosActualizados);
     this.http.put<any>(`${environment.publicacionesApiUrl}/publicaciones/${product.id}`, datosActualizados, { headers }).subscribe({

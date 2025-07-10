@@ -8,7 +8,7 @@
       <div class="product-title">{{ product.titulo }}</div>
       <div class="product-description">{{ product.descripcion }}</div>
       <div class="product-price">Precio: {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>
-      <div class="product-estado">Estado: {{ product.estado?.nombre || product.estado }}</div>
+      <div *ngIf="isAdmin()" class="product-estado">Estado: {{ product.estado?.nombre || product.estado }}</div>
       <a class="see-more-btn" [routerLink]="['/dashboard/producto', product.id]">Ver más</a>
       <div *ngIf="isAdmin() && editingProductId === product.id" class="edit-inline-block">
         <input [(ngModel)]="editedProduct.titulo" placeholder="Título" class="edit-input" />
