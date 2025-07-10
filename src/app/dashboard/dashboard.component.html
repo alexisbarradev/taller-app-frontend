@@ -16,6 +16,7 @@
         <ul>
           <li><a routerLink="/dashboard" (click)="navigateToDashboard()">Home</a></li>
           <li *ngIf="isAdmin()">
+
             <a routerLink="/dashboard/todos-los-productos">Productos</a>
           </li>
           <li *ngIf="isAdmin()">
@@ -34,6 +35,15 @@
             <span><i class="fa fa-twitter"></i></span>
             <span><i class="fa fa-phone"></i></span>
           </div>
+
+            <a routerLink="/dashboard/usuarios">Listado de usuarios</a>
+          </li>
+          <li *ngIf="isAdmin()">
+            <a routerLink="/dashboard/todos-los-productos">Listado de productos</a>
+          </li>
+          <li><a routerLink="/dashboard/publicar-producto">Publicar productos</a></li>
+          <li><a routerLink="/dashboard/mis-productos">Mis productos</a></li>
+
         </ul>
       </nav>
     </div>
