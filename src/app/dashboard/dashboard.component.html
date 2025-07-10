@@ -59,8 +59,8 @@
           <p><strong>Nombre:</strong> {{ usuario.primerNombre }} {{ usuario.segundoNombre }} {{ usuario.apellidoPaterno }} {{ usuario.apellidoMaterno }}</p>
           <p><strong>Correo:</strong> {{ usuario.correo }}</p>
           <p><strong>Usuario:</strong> {{ usuario.usuario }}</p>
-          <p><strong>Rol:</strong> {{ usuario.rol?.nombre }}</p>
-          <p><strong>Estado:</strong> {{ usuario.estado?.estado }}</p>
+          <p><strong>Rol:</strong> {{ usuario.rol.nombre }}</p>
+          <p><strong>Estado:</strong> {{ usuario.estado.estado }}</p>
         </div>
         <button (click)="closeUserModal()" style="background:#1976d2; color:white; border:none; padding:8px 16px; border-radius:4px; margin-top:10px;">Cerrar</button>
       </div>

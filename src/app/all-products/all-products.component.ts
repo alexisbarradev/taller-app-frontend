@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { RouterModule } from '@angular/router';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-all-products',
@@ -16,7 +17,7 @@ export class AllProductsComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private userService: UserService) {}
 
   ngOnInit(): void {
     this.fetchAllProducts();
@@ -29,6 +30,8 @@ export class AllProductsComponent implements OnInit {
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
     this.http.get<any[]>(`${environment.publicacionesApiUrl}/publicaciones`, { headers }).subscribe({
       next: data => {
+        console.log('Estructura de productos recibidos:', data);
+        // Deja todos los productos sin filtrar para inspección visual
         this.products = data;
         this.loading = false;
       },
