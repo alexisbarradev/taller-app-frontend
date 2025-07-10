@@ -19,7 +19,7 @@ function isRoleObject(role: any): role is { id: number } {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, UsersListComponent, RouterOutlet, AllProductsComponent],
+  imports: [CommonModule, RouterModule, RouterOutlet],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -65,6 +65,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       })
     );
+
+    // Redirección automática para usuarios normales al entrar al dashboard
+    setTimeout(() => {
+      if (!this.isAdmin() && this.router.url === '/dashboard') {
+        this.router.navigate(['/dashboard/todos-los-productos']);
+      }
+    });
 
     // Check for token in query parameters (for OAuth2 redirects)
     this.route.queryParams.subscribe(params => {
@@ -220,7 +227,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.isAdmin()) {
       this.router.navigate(['/dashboard/usuarios']);
     } else {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/dashboard/todos-los-productos']);
     }
   }
 
