@@ -30,9 +30,15 @@ export class AllProductsComponent implements OnInit {
     const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
     this.http.get<any[]>(`${environment.publicacionesApiUrl}/publicaciones`, { headers }).subscribe({
       next: data => {
-        console.log('Estructura de productos recibidos:', data);
-        // Deja todos los productos sin filtrar para inspección visual
-        this.products = data;
+        const rol = this.userService.getRol();
+        console.log('Rol actual:', rol);
+        if ((typeof rol === 'number' && rol === 1) || (typeof rol === 'object' && rol && (rol as any).id === 1)) {
+          this.products = data;
+        } else {
+          this.products = data.filter(
+            p => p.estado && typeof p.estado.nombre === 'string' && p.estado.nombre.trim().toLowerCase() === 'publicado'
+          );
+        }
         this.loading = false;
       },
       error: err => {

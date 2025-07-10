@@ -30,9 +30,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   userRole: number | null = null;
   userEmail: string = '';
   private subscriptions = new Subscription();
-  products: any[] = [];
-  loadingProducts = false;
-  errorProducts: string | null = null;
+  private rolSub: Subscription | null = null;
   showUserModal = false;
   usuario: Usuario | null = null;
 
@@ -51,6 +49,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.userService.rolUsuario$.subscribe(role => {
         this.userRole = role;
         this.cdr.detectChanges();
+        // Redirección automática tras login SOLO si el rol ya está definido
+        if (this.router.url === '/dashboard' && this.userRole !== null) {
+          console.log('[Dashboard] Redirección automática, userRole:', this.userRole);
+          if (this.isAdmin()) {
+            console.log('[Dashboard] Es admin, redirigiendo a /dashboard/usuarios');
+            this.router.navigate(['/dashboard/usuarios']);
+          } else {
+            console.log('[Dashboard] No es admin, redirigiendo a /dashboard/todos-los-productos');
+            this.router.navigate(['/dashboard/todos-los-productos']);
+          }
+        }
+        // Ya no llamar a this.fetchProducts();
       })
     );
     this.subscriptions.add(
@@ -65,12 +75,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       })
     );
-
-    // Redirección automática para usuarios normales al entrar al dashboard
-    setTimeout(() => {
-      if (!this.isAdmin() && this.router.url === '/dashboard') {
-        this.router.navigate(['/dashboard/todos-los-productos']);
+    this.rolSub = this.userService.rolUsuario$.subscribe(role => {
+      this.userRole = role;
+      this.cdr.detectChanges();
+      // Redirección automática tras login
+      if (this.router.url === '/dashboard') {
+        if (this.isAdmin()) {
+          this.router.navigate(['/dashboard/usuarios']);
+        } else {
+          this.router.navigate(['/dashboard/todos-los-productos']);
+        }
       }
+      // Ya no llamar a this.fetchProducts();
     });
 
     // Check for token in query parameters (for OAuth2 redirects)
@@ -91,11 +107,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // Update user information
     this.updateUserInfo();
-    this.fetchProducts();
+    // Ya no llamar a this.fetchProducts();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.rolSub?.unsubscribe();
   }
 
   private async updateUserInfo(): Promise<void> {
@@ -172,23 +189,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  fetchProducts(): void {
-    this.loadingProducts = true;
-    this.errorProducts = null;
-    const token = this.authService.getToken();
-    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-    this.http.get<any[]>(`${environment.publicacionesApiUrl}/publicaciones/publicados`, { headers }).subscribe({
-      next: data => {
-        this.products = data;
-        console.log('[Dashboard] Publicaciones recibidas:', this.products);
-        this.loadingProducts = false;
-      },
-      error: err => {
-        this.errorProducts = 'Error al cargar publicaciones.';
-        this.loadingProducts = false;
-      }
-    });
-  }
+  // Eliminar fetchProducts()
 
  
 

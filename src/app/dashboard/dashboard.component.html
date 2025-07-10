@@ -15,15 +15,13 @@
       <nav>
         <ul>
           <li *ngIf="isAdmin()">
-            <a routerLink="/dashboard/todos-los-productos">Listado de todos los productos</a>
+            <a routerLink="/dashboard/usuarios">Listado de usuarios</a>
           </li>
           <li *ngIf="isAdmin()">
-            <a routerLink="/dashboard/usuarios">Listado de usuarios</a>
+            <a routerLink="/dashboard/todos-los-productos">Listado de productos</a>
           </li>
           <li><a routerLink="/dashboard/publicar-producto">Publicar productos</a></li>
           <li><a routerLink="/dashboard/mis-productos">Mis productos</a></li>
-          <li><a routerLink="/favoritos">Favoritos</a></li>
-          <li><a routerLink="/historial">Historial</a></li>
         </ul>
       </nav>
     </div>
