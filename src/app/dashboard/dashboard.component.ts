@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   showUserModal = false;
   usuario: Usuario | null = null;
   cargandoRol = true;
+  notificacionesIntercambio: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -111,6 +112,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Ya no llamar a this.fetchProducts();
   }
 
+  async cargarNotificacionesIntercambio() {
+    try {
+      console.log('Cargando notificaciones de intercambio...');
+      // Obtener el ID del usuario actual
+      let userId = null;
+      if (this.usuario && this.usuario.id) {
+        userId = this.usuario.id;
+        console.log('Usuario ID desde this.usuario:', userId);
+      } else {
+        const userIdLS = localStorage.getItem('userId');
+        if (userIdLS) userId = Number(userIdLS);
+        console.log('Usuario ID desde localStorage:', userId);
+      }
+      if (!userId) {
+        console.log('No se pudo obtener userId, saliendo...');
+        return;
+      }
+      // Llamar al endpoint de ofertas recibidas
+      const token = localStorage.getItem('token');
+      const headers = token ? { headers: new HttpHeaders({ 'Authorization': `Bearer ${token}` }) } : {};
+      console.log('Llamando a:', `${environment.publicacionesApiUrl}/intercambios/ofertas-recibidas/${userId}`);
+      const resp: any[] = await this.http.get<any[]>(`${environment.publicacionesApiUrl}/intercambios/ofertas-recibidas/${userId}`, headers).toPromise() || [];
+      console.log('Respuesta del servidor:', resp);
+      // Contar solo las pendientes
+      this.notificacionesIntercambio = resp.filter(o => o.estadoIntercambio === 'PENDIENTE').length;
+      console.log('Notificaciones pendientes:', this.notificacionesIntercambio);
+      this.cdr.detectChanges();
+    } catch (e) {
+      console.error('Error al cargar notificaciones:', e);
+      this.notificacionesIntercambio = 0;
+    }
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
     this.rolSub?.unsubscribe();
@@ -183,6 +217,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       } catch (error) {
         this.userService.setRol(null);
       }
+      
+      // Cargar notificaciones después de tener el usuario
+      await this.cargarNotificacionesIntercambio();
     } else {
       this.username = 'Invitado';
       this.userService.setUserName('Invitado');

@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UserService, Usuario } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-product-view',
@@ -35,12 +36,25 @@ export class ProductViewComponent implements OnInit {
   editingCommentId: number | null = null;
   editedComment = { texto: '', valoracion: 5 };
 
+  // Variables para intercambio
+  showIntercambioModal = false;
+  userProducts: any[] = [];
+  selectedProductId: number | null = null;
+  loadingUserProducts = false;
+  intercambioError: string | null = null;
+  submittingIntercambio = false;
+
+  // Estado UX para cambio de estado
+  cambiandoEstado = false;
+  estadoError: string | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
     private router: Router,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private apiService: ApiService
   ) {}
 
   async ngOnInit() {
@@ -250,5 +264,118 @@ export class ProductViewComponent implements OnInit {
       },
       error: () => alert('Error al editar el comentario')
     });
+  }
+
+  // Métodos para intercambio
+  isProductOwner(): boolean {
+    return this.currentUserId === this.product?.idAutor;
+  }
+
+  canShowIntercambioButton(): boolean {
+    return this.currentUserId && this.product && !this.isProductOwner() && 
+           this.product.estado?.nombre === 'Publicado' || this.product.estado === 'Publicado';
+  }
+
+  openIntercambioModal(): void {
+    if (!this.currentUserId) {
+      alert('Debes iniciar sesión para realizar intercambios');
+      return;
+    }
+    this.showIntercambioModal = true;
+    this.loadUserProducts();
+  }
+
+  closeIntercambioModal(): void {
+    this.showIntercambioModal = false;
+    this.selectedProductId = null;
+    this.intercambioError = null;
+  }
+
+  loadUserProducts(): void {
+    this.loadingUserProducts = true;
+    this.intercambioError = null;
+    
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ 'Authorization': `Bearer ${token}` }) : undefined;
+    
+    this.http.get<any[]>(`${environment.publicacionesApiUrl}/publicaciones/usuario/${this.currentUserId}`, { headers }).subscribe({
+      next: (products) => {
+        // Filtrar solo productos publicados
+        this.userProducts = products.filter(p => 
+          p.estado?.nombre === 'Publicado' || p.estado === 'Publicado'
+        );
+        this.loadingUserProducts = false;
+      },
+      error: (err) => {
+        this.intercambioError = 'Error al cargar tus productos';
+        this.loadingUserProducts = false;
+      }
+    });
+  }
+
+  submitIntercambio(): void {
+    if (!this.selectedProductId) {
+      this.intercambioError = 'Debes seleccionar un producto para intercambiar';
+      return;
+    }
+
+    this.submittingIntercambio = true;
+    this.intercambioError = null;
+
+    const intercambioData = {
+      idProductoSolicitado: this.product.id,
+      idProductoOfrecido: this.selectedProductId,
+      idUsuarioSolicitante: this.currentUserId,
+      idUsuarioPropietario: this.product.idAutor
+    };
+
+    this.apiService.crearOfertaIntercambio(intercambioData).subscribe({
+      next: (response) => {
+        alert('Oferta de intercambio enviada correctamente');
+        this.closeIntercambioModal();
+        this.submittingIntercambio = false;
+      },
+      error: (err) => {
+        this.intercambioError = err.error || 'Error al enviar la oferta de intercambio';
+        this.submittingIntercambio = false;
+      }
+    });
+  }
+
+  puedeEditarEstado(): boolean {
+    // Solo el dueño puede cambiar el estado
+    return this.currentUserId === this.product?.idAutor;
+  }
+
+  esPublicado(): boolean {
+    return this.product?.estado?.nombre === 'Publicado' || this.product?.estado === 'Publicado';
+  }
+
+  cambiarEstadoPublicacion(nuevoEstado: 'Publicado' | 'Borrador') {
+    if (!this.puedeEditarEstado() || this.cambiandoEstado) return;
+    this.cambiandoEstado = true;
+    this.estadoError = null;
+    const estadoId = nuevoEstado === 'Publicado' ? 1 : 2;
+    const datosActualizados = {
+      ...this.product,
+      estado: { id: estadoId }
+    };
+    const token = localStorage.getItem('token');
+    const headers = token ? { headers: new HttpHeaders({ 'Authorization': `Bearer ${token}` }) } : {};
+    this.http.put<any>(`${environment.publicacionesApiUrl}/publicaciones/${this.product.id}`, datosActualizados, headers).subscribe({
+      next: (updated) => {
+        this.product.estado = updated.estado;
+        this.cambiandoEstado = false;
+      },
+      error: (err) => {
+        this.estadoError = 'Error al cambiar el estado';
+        this.cambiandoEstado = false;
+      }
+    });
+  }
+
+  onToggleEstado(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.cambiarEstadoPublicacion(checked ? 'Publicado' : 'Borrador');
   }
 } 

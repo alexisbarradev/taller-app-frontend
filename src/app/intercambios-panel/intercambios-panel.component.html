@@ -1,0 +1,177 @@
+<div class="intercambios-panel">
+  <div class="panel-header">
+    <h2>Panel de Intercambios</h2>
+    <p>Gestiona tus ofertas de intercambio</p>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Cargando intercambios...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error" class="panel-content">
+    <!-- Pestañas -->
+    <div class="tabs">
+      <button 
+        [class.active]="activeTab === 'recibidas'"
+        (click)="cambiarTab('recibidas')"
+        class="tab-btn">
+        Ofertas Recibidas ({{ ofertasRecibidas.length }})
+      </button>
+      <button 
+        [class.active]="activeTab === 'enviadas'"
+        (click)="cambiarTab('enviadas')"
+        class="tab-btn">
+        Ofertas Enviadas ({{ ofertasEnviadas.length }})
+      </button>
+    </div>
+
+    <!-- Contenido de Ofertas Recibidas -->
+    <div *ngIf="activeTab === 'recibidas'" class="tab-content">
+      <div *ngIf="ofertasRecibidas.length === 0" class="no-ofertas">
+        <p>No tienes ofertas de intercambio recibidas.</p>
+      </div>
+
+      <div *ngFor="let oferta of ofertasRecibidas" class="oferta-card">
+        <div class="oferta-header">
+          <h3>Oferta de {{ oferta.nombreUsuarioSolicitante }}</h3>
+          <span [class]="getEstadoClass(oferta.estadoIntercambio)">
+            {{ getEstadoText(oferta.estadoIntercambio) }}
+          </span>
+        </div>
+
+        <div class="productos-comparison">
+          <div class="producto-solicitado">
+            <h4>Tu Producto (Solicitado)</h4>
+            <div class="producto-info">
+              <img [src]="oferta.productoSolicitado.urlFoto || 'assets/no-image.png'" 
+                   [alt]="oferta.productoSolicitado.titulo">
+              <div class="producto-details">
+                <h5>{{ oferta.productoSolicitado.titulo }}</h5>
+                <p>{{ oferta.productoSolicitado.descripcion }}</p>
+                <p class="price">{{ oferta.productoSolicitado.precio | currency:'USD':'symbol':'1.0-0' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="intercambio-arrow">⇄</div>
+
+          <div class="producto-ofrecido">
+            <h4>Producto Ofrecido</h4>
+            <div class="producto-info">
+              <img [src]="oferta.productoOfrecido.urlFoto || 'assets/no-image.png'" 
+                   [alt]="oferta.productoOfrecido.titulo">
+              <div class="producto-details">
+                <h5>{{ oferta.productoOfrecido.titulo }}</h5>
+                <p>{{ oferta.productoOfrecido.descripcion }}</p>
+                <p class="price">{{ oferta.productoOfrecido.precio | currency:'USD':'symbol':'1.0-0' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="oferta-footer">
+          <div class="oferta-date">
+            <small>Oferta enviada: {{ formatDate(oferta.fechaCreacion) }}</small>
+          </div>
+          
+          <div *ngIf="oferta.estadoIntercambio === 'PENDIENTE'" class="oferta-actions">
+            <button (click)="aceptarOferta(oferta.id)" class="btn-aceptar">
+              ✅ Aceptar
+            </button>
+            <button (click)="rechazarOferta(oferta.id)" class="btn-rechazar">
+              ❌ Rechazar
+            </button>
+          </div>
+
+          <div *ngIf="oferta.estadoIntercambio === 'ACEPTADO'" class="oferta-status">
+            <span class="status-accepted">✅ Intercambio aceptado</span>
+            <small *ngIf="oferta.fechaRespuesta">
+              Respondido: {{ formatDate(oferta.fechaRespuesta) }}
+            </small>
+          </div>
+
+          <div *ngIf="oferta.estadoIntercambio === 'RECHAZADO'" class="oferta-status">
+            <span class="status-rejected">❌ Intercambio rechazado</span>
+            <small *ngIf="oferta.fechaRespuesta">
+              Respondido: {{ formatDate(oferta.fechaRespuesta) }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido de Ofertas Enviadas -->
+    <div *ngIf="activeTab === 'enviadas'" class="tab-content">
+      <div *ngIf="ofertasEnviadas.length === 0" class="no-ofertas">
+        <p>No has enviado ofertas de intercambio.</p>
+      </div>
+
+      <div *ngFor="let oferta of ofertasEnviadas" class="oferta-card">
+        <div class="oferta-header">
+          <h3>Oferta para {{ oferta.nombreUsuarioPropietario }}</h3>
+          <span [class]="getEstadoClass(oferta.estadoIntercambio)">
+            {{ getEstadoText(oferta.estadoIntercambio) }}
+          </span>
+        </div>
+
+        <div class="productos-comparison">
+          <div class="producto-solicitado">
+            <h4>Producto Solicitado</h4>
+            <div class="producto-info">
+              <img [src]="oferta.productoSolicitado.urlFoto || 'assets/no-image.png'" 
+                   [alt]="oferta.productoSolicitado.titulo">
+              <div class="producto-details">
+                <h5>{{ oferta.productoSolicitado.titulo }}</h5>
+                <p>{{ oferta.productoSolicitado.descripcion }}</p>
+                <p class="price">{{ oferta.productoSolicitado.precio | currency:'USD':'symbol':'1.0-0' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="intercambio-arrow">⇄</div>
+
+          <div class="producto-ofrecido">
+            <h4>Tu Producto (Ofrecido)</h4>
+            <div class="producto-info">
+              <img [src]="oferta.productoOfrecido.urlFoto || 'assets/no-image.png'" 
+                   [alt]="oferta.productoOfrecido.titulo">
+              <div class="producto-details">
+                <h5>{{ oferta.productoOfrecido.titulo }}</h5>
+                <p>{{ oferta.productoOfrecido.descripcion }}</p>
+                <p class="price">{{ oferta.productoOfrecido.precio | currency:'USD':'symbol':'1.0-0' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="oferta-footer">
+          <div class="oferta-date">
+            <small>Oferta enviada: {{ formatDate(oferta.fechaCreacion) }}</small>
+          </div>
+          
+          <div *ngIf="oferta.estadoIntercambio === 'ACEPTADO'" class="oferta-status">
+            <span class="status-accepted">✅ Tu oferta fue aceptada</span>
+            <small *ngIf="oferta.fechaRespuesta">
+              Respondido: {{ formatDate(oferta.fechaRespuesta) }}
+            </small>
+          </div>
+
+          <div *ngIf="oferta.estadoIntercambio === 'RECHAZADO'" class="oferta-status">
+            <span class="status-rejected">❌ Tu oferta fue rechazada</span>
+            <small *ngIf="oferta.fechaRespuesta">
+              Respondido: {{ formatDate(oferta.fechaRespuesta) }}
+            </small>
+          </div>
+
+          <div *ngIf="oferta.estadoIntercambio === 'PENDIENTE'" class="oferta-status">
+            <span class="status-pending">⏳ Esperando respuesta</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

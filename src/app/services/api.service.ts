@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
   private apiUrl = environment.apiUrl;
+  private publicacionesApiUrl = environment.publicacionesApiUrl;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -28,5 +29,32 @@ export class ApiService {
     return this.http.post<T>(`${this.apiUrl}/${endpoint}`, body, { headers: this.getHeaders() });
   }
 
-  // Puedes agregar put, delete, patch según necesites
+  put<T>(endpoint: string, body: any): Observable<T> {
+    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, body, { headers: this.getHeaders() });
+  }
+
+  delete<T>(endpoint: string): Observable<T> {
+    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, { headers: this.getHeaders() });
+  }
+
+  // Métodos específicos para intercambios
+  crearOfertaIntercambio(intercambioData: any): Observable<any> {
+    return this.http.post<any>(`${this.publicacionesApiUrl}/intercambios/crear`, intercambioData, { headers: this.getHeaders() });
+  }
+
+  aceptarOferta(intercambioId: number): Observable<any> {
+    return this.http.post<any>(`${this.publicacionesApiUrl}/intercambios/${intercambioId}/aceptar`, {}, { headers: this.getHeaders() });
+  }
+
+  rechazarOferta(intercambioId: number): Observable<any> {
+    return this.http.post<any>(`${this.publicacionesApiUrl}/intercambios/${intercambioId}/rechazar`, {}, { headers: this.getHeaders() });
+  }
+
+  getOfertasRecibidas(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.publicacionesApiUrl}/intercambios/ofertas-recibidas/${userId}`, { headers: this.getHeaders() });
+  }
+
+  getOfertasEnviadas(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.publicacionesApiUrl}/intercambios/ofertas-enviadas/${userId}`, { headers: this.getHeaders() });
+  }
 }
