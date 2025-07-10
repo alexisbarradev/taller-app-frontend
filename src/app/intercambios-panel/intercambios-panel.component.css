@@ -1,0 +1,342 @@
+.intercambios-panel {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.panel-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.panel-header h2 {
+  color: #1a237e;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.panel-header p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.error {
+  background: #ffebee;
+  color: #d32f2f;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #d32f2f;
+  margin-bottom: 1rem;
+}
+
+/* Pestañas */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-btn:hover {
+  color: #1a237e;
+  background: #f8f9fa;
+}
+
+.tab-btn.active {
+  color: #1a237e;
+  border-bottom-color: #1a237e;
+  background: #f8f9fa;
+}
+
+/* Contenido de pestañas */
+.tab-content {
+  min-height: 400px;
+}
+
+.no-ofertas {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+  font-style: italic;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #dee2e6;
+}
+
+/* Tarjetas de ofertas */
+.oferta-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.oferta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.oferta-header h3 {
+  margin: 0;
+  color: #1a237e;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Estados */
+.estado-pendiente {
+  background: #fff3cd;
+  color: #856404;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.estado-aceptado {
+  background: #d4edda;
+  color: #155724;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.estado-rechazado {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.estado-cancelado {
+  background: #e2e3e5;
+  color: #383d41;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Comparación de productos */
+.productos-comparison {
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+.producto-solicitado,
+.producto-ofrecido {
+  flex: 1;
+  text-align: center;
+}
+
+.producto-solicitado h4,
+.producto-ofrecido h4 {
+  margin: 0 0 1rem 0;
+  color: #495057;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.producto-info {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1rem;
+  border: 2px solid #e9ecef;
+}
+
+.producto-info img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.producto-details h5 {
+  margin: 0 0 0.5rem 0;
+  color: #1a237e;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.producto-details p {
+  margin: 0.3rem 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.producto-details .price {
+  font-weight: 600;
+  color: #28a745;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+.intercambio-arrow {
+  font-size: 2rem;
+  color: #1a237e;
+  font-weight: bold;
+  background: #e3f2fd;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(26, 35, 126, 0.2);
+}
+
+/* Pie de oferta */
+.oferta-footer {
+  padding: 1.5rem 2rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.oferta-date {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.oferta-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-aceptar {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-aceptar:hover {
+  background: #218838;
+}
+
+.btn-rechazar {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-rechazar:hover {
+  background: #c82333;
+}
+
+.oferta-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+.status-accepted {
+  color: #155724;
+  font-weight: 600;
+}
+
+.status-rejected {
+  color: #721c24;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: #856404;
+  font-weight: 600;
+}
+
+.oferta-status small {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .intercambios-panel {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+
+  .panel-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab-btn {
+    text-align: center;
+  }
+
+  .productos-comparison {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .intercambio-arrow {
+    transform: rotate(90deg);
+  }
+
+  .oferta-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .oferta-actions {
+    justify-content: center;
+  }
+
+  .oferta-status {
+    align-items: center;
+  }
+} 

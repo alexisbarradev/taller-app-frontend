@@ -27,6 +27,7 @@
             <li *ngIf="isAdmin()"><a routerLink="/dashboard/todos-los-productos">Listado de productos</a></li>
             <li><a routerLink="/dashboard/publicar-producto">Publicar productos</a></li>
             <li *ngIf="!isAdmin()"><a routerLink="/dashboard/mis-productos">Mis productos</a></li>
+            <li><a routerLink="/dashboard/intercambios">🔄 Intercambios</a></li>
             <li><a routerLink="/mi-cuenta">Mi cuenta</a></li>
             <li><a routerLink="/ayuda">Ayuda</a></li>
             <li><a routerLink="/ayuda" (click)="logout()">Cerrar Sesión</a></li>
@@ -48,8 +49,12 @@
         <div class="welcome-message">
           <h2>Bienvenido, {{ username }}!</h2>
         </div>
-        <div class="user-info">
-          <span class="user-avatar"><i class="fa fa-user"></i></span>
+        <div class="user-info" style="position: relative;">
+          <!-- Debug: {{ notificacionesIntercambio }} -->
+          <span class="user-avatar" style="position: relative;">
+            <i class="fa fa-user"></i>
+            <span *ngIf="notificacionesIntercambio > 0" class="notificacion-badge">{{ notificacionesIntercambio }}</span>
+          </span>
           <span class="user-link" (click)="openUserModal()" style="cursor:pointer; color:white; font-weight:bold;">
             {{ isAdmin() ? "Admin" : username }}
           </span>

@@ -14,11 +14,33 @@
       <div class="product-detail-row"><strong>Precio:</strong> {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>
       <div class="product-detail-row">
         <strong>Estado:</strong>
-        <span [ngClass]="{'estado-publicado': (product.estado?.estado || product.estado) === 'Publicado'}">
-          {{ product.estado?.estado || product.estado?.nombre || product.estado || 'Sin estado' }}
-        </span>
+        <ng-container *ngIf="puedeEditarEstado()">
+          <span class="toggle-label toggle-label-left">Borrador</span>
+          <label class="switch-estado">
+            <input type="checkbox"
+                   [checked]="esPublicado()"
+                   [disabled]="cambiandoEstado"
+                   (change)="onToggleEstado($event)">
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">Publicado</span>
+          <span *ngIf="cambiandoEstado" class="estado-spinner">Guardando...</span>
+          <span *ngIf="estadoError" class="error-message">{{ estadoError }}</span>
+        </ng-container>
+        <ng-container *ngIf="!puedeEditarEstado()">
+          <span [ngClass]="{'estado-publicado': (product?.estado?.estado || product?.estado) === 'Publicado'}">
+            {{ product?.estado?.estado || product?.estado?.nombre || product?.estado || 'Sin estado' }}
+          </span>
+        </ng-container>
       </div>
       <div class="product-detail-row"><strong>Autor:</strong> {{ autorNombre }}</div>
+      
+      <!-- Botón de Intercambio -->
+      <div *ngIf="canShowIntercambioButton()" class="intercambio-section">
+        <button (click)="openIntercambioModal()" class="intercambio-btn">
+          🔄 Intercambiar Producto
+        </button>
+      </div>
     </div>
   </div>
 
@@ -97,6 +119,57 @@
           <button (click)="editarComentario(comment)" class="edit-btn"><span class="icon">✏️</span>Editar</button>
           <button (click)="borrarComentario(comment.id)" class="delete-btn"><span class="icon">🗑️</span>Borrar</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Intercambio -->
+  <div *ngIf="showIntercambioModal" class="modal-overlay" (click)="closeIntercambioModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Intercambiar Producto</h3>
+        <button (click)="closeIntercambioModal()" class="close-btn">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <p>Selecciona uno de tus productos para intercambiar con "{{ product.titulo }}":</p>
+        
+        <div *ngIf="loadingUserProducts" class="loading">
+          Cargando tus productos...
+        </div>
+        
+        <div *ngIf="!loadingUserProducts && userProducts.length === 0" class="no-products">
+          No tienes productos publicados para intercambiar.
+        </div>
+        
+        <div *ngIf="!loadingUserProducts && userProducts.length > 0" class="products-grid">
+          <div 
+            *ngFor="let userProduct of userProducts" 
+            class="product-option"
+            [class.selected]="selectedProductId === userProduct.id"
+            (click)="selectedProductId = userProduct.id">
+            <img [src]="userProduct.urlFoto || 'assets/no-image.png'" [alt]="userProduct.titulo">
+            <div class="product-info">
+              <h4>{{ userProduct.titulo }}</h4>
+              <p>{{ userProduct.descripcion }}</p>
+              <p class="price">{{ userProduct.precio | currency:'USD':'symbol':'1.0-0' }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="intercambioError" class="error-message">
+          {{ intercambioError }}
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button (click)="closeIntercambioModal()" class="cancel-btn">Cancelar</button>
+        <button 
+          (click)="submitIntercambio()" 
+          [disabled]="!selectedProductId || submittingIntercambio"
+          class="submit-btn">
+          {{ submittingIntercambio ? 'Enviando...' : 'Enviar Oferta' }}
+        </button>
       </div>
     </div>
   </div>

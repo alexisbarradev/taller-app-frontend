@@ -77,8 +77,8 @@
   margin-bottom: 0.5rem;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.7rem;
   width: 100%;
   min-height: 40px;
   text-align: left;
@@ -377,4 +377,287 @@
 }
 .edit-btn .icon, .delete-btn .icon {
   margin-right: 5px;
+}
+
+/* Estilos para intercambio */
+.intercambio-section {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.intercambio-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.intercambio-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* Modal de intercambio */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #1a237e;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.close-btn:hover {
+  background: #f8f9fa;
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.modal-body p {
+  margin-bottom: 1.5rem;
+  color: #495057;
+  font-size: 1rem;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.product-option {
+  border: 2px solid #e9ecef;
+  border-radius: 16px;
+  padding: 1.3rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  min-height: 90px;
+}
+
+.product-option:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.product-option.selected {
+  border-color: #667eea;
+  background: #f8f9ff;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.product-option img {
+  width: 80px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 0;
+  border: 2.5px solid #e9ecef;
+  transition: border-color 0.3s;
+  flex-shrink: 0;
+}
+
+.product-option .product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.product-option .product-info h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #1a237e;
+  font-weight: 600;
+}
+
+.product-option .product-info p {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.product-option .product-info .price {
+  font-weight: 600;
+  color: #28a745;
+  font-size: 1rem;
+}
+
+.no-products {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 2rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #5a6268;
+}
+
+.submit-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: #218838;
+}
+
+.submit-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+} 
+
+/* Toggle de estado */
+.switch-estado {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+  margin-left: 1rem;
+  vertical-align: middle;
+}
+.switch-estado input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 26px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+.switch-estado input:checked + .slider {
+  background-color: #22bb33;
+}
+.switch-estado input:checked + .slider:before {
+  transform: translateX(22px);
+}
+.toggle-label {
+  margin-left: 0.7rem;
+  font-weight: 600;
+  color: #1a237e;
+}
+.toggle-label-left {
+  margin-right: 0.7rem;
+  font-weight: 600;
+  color: #1a237e;
+}
+.estado-spinner {
+  margin-left: 1rem;
+  color: #1976d2;
+  font-size: 0.95rem;
+} 
+
+@media (max-width: 600px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+  .product-option {
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 110px;
+  }
+  .product-option img {
+    margin-bottom: 0.5rem;
+  }
 } 
