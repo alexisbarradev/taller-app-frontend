@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   showUserModal = false;
   usuario: Usuario | null = null;
   cargandoRol = true;
-  notificacionesIntercambio: number = 0;
+  notificacionesIntercambio: number = 3; // Valor de prueba temporal
 
   constructor(
     private route: ActivatedRoute,

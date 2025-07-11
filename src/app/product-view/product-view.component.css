@@ -37,6 +37,7 @@
   background: #f7f8fa;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  position: relative;
 }
 
 .product-image img {
@@ -85,15 +86,10 @@
   word-break: break-word;
 }
 
-.estado-publicado {
-  color: #22bb33 !important;
+.estado-publicado, .estado-aprobado {
+  color: #2ecc40 !important;
   font-weight: bold;
-  font-size: 1.1rem;
-  background: #eafbe7;
-  border-radius: 6px;
-  padding: 0.2rem 0.7rem;
-  margin-left: 0.5rem;
-  display: inline-block;
+  background: none !important;
 }
 .back-btn {
   background: #22304a;
@@ -646,6 +642,40 @@
   color: #1976d2;
   font-size: 0.95rem;
 } 
+
+.intercambiado-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.ticket-verde {
+  font-size: 1.5em;
+}
+
+.ticket-verde-imagen {
+  font-size: 2em;
+  color: #2ecc40;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border-radius: 50%;
+  padding: 2px 6px;
+  box-shadow: none;
+}
+
+.aprobado-label {
+  color: #2ecc40;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-top: 4px;
+  text-align: right;
+  width: 100%;
+}
 
 @media (max-width: 600px) {
   .products-grid {

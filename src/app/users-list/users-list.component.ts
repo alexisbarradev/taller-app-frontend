@@ -11,9 +11,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./users-list.component.css']
 })
 export class UsersListComponent implements OnInit {
-  users: Usuario[] = [];
-  error: string = '';
-  loading: boolean = true;
+  users: any[] = [];
+  loading = true;
+  error: string | null = null;
+  mostrarPreview: number | null = null;
 
   constructor(private userService: UserService, private router: Router) {}
 

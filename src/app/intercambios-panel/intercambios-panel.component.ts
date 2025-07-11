@@ -20,6 +20,8 @@ export class IntercambiosPanelComponent implements OnInit {
   loading = true;
   error: string | null = null;
   activeTab: 'recibidas' | 'enviadas' = 'recibidas';
+  userNames: { [id: number]: string } = {};
+  loadingNames: Set<number> = new Set();
 
   constructor(
     private router: Router,
@@ -57,15 +59,19 @@ export class IntercambiosPanelComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
+    console.log('Cargando ofertas para userId:', this.currentUserId);
+
     // Cargar ofertas recibidas
     this.apiService.getOfertasRecibidas(this.currentUserId!).subscribe({
       next: (ofertas) => {
         this.ofertasRecibidas = ofertas;
         this.loading = false;
+        console.log('Ofertas recibidas:', ofertas);
       },
       error: (err) => {
         this.error = 'Error al cargar las ofertas recibidas';
         this.loading = false;
+        console.error('Error al cargar ofertas recibidas:', err);
       }
     });
 
@@ -73,6 +79,7 @@ export class IntercambiosPanelComponent implements OnInit {
     this.apiService.getOfertasEnviadas(this.currentUserId!).subscribe({
       next: (ofertas) => {
         this.ofertasEnviadas = ofertas;
+        console.log('Ofertas enviadas:', ofertas);
       },
       error: (err) => {
         console.error('Error al cargar ofertas enviadas:', err);
@@ -103,6 +110,36 @@ export class IntercambiosPanelComponent implements OnInit {
         },
         error: (err) => {
           alert(err.error || 'Error al rechazar la oferta');
+        }
+      });
+    }
+  }
+
+  confirmarIntercambio(intercambioId: number) {
+    if (!this.currentUserId) return;
+    if (confirm('¿Confirmas que recibiste el producto y el intercambio fue exitoso?')) {
+      this.apiService.confirmarIntercambio(intercambioId, this.currentUserId).subscribe({
+        next: () => {
+          alert('¡Intercambio confirmado!');
+          this.loadOfertas();
+        },
+        error: (err) => {
+          alert(err.error || 'Error al confirmar el intercambio');
+        }
+      });
+    }
+  }
+
+  revertirIntercambio(intercambioId: number) {
+    if (!this.currentUserId) return;
+    if (confirm('¿Seguro que quieres revertir el intercambio y devolver el producto a publicado?')) {
+      this.apiService.revertirIntercambio(intercambioId, this.currentUserId).subscribe({
+        next: () => {
+          alert('Intercambio revertido. El producto vuelve a estar publicado.');
+          this.loadOfertas();
+        },
+        error: (err) => {
+          alert(err.error || 'Error al revertir el intercambio');
         }
       });
     }
@@ -154,5 +191,25 @@ export class IntercambiosPanelComponent implements OnInit {
 
   cambiarTab(tab: 'recibidas' | 'enviadas') {
     this.activeTab = tab;
+  }
+
+  getUserNameById(userId: number): string {
+    if (this.userNames[userId]) {
+      return this.userNames[userId];
+    }
+    if (!this.loadingNames.has(userId)) {
+      this.loadingNames.add(userId);
+      this.userService.getUsuarioPorId(userId).then(usuario => {
+        if (usuario && usuario.primerNombre && usuario.apellidoPaterno) {
+          this.userNames[userId] = `${usuario.primerNombre} ${usuario.apellidoPaterno}`;
+        } else if (usuario && usuario.primerNombre) {
+          this.userNames[userId] = usuario.primerNombre;
+        } else {
+          this.userNames[userId] = 'Usuario ' + userId;
+        }
+        this.loadingNames.delete(userId);
+      });
+    }
+    return '';
   }
 } 

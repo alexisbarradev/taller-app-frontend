@@ -4,7 +4,21 @@
   <div *ngIf="error" class="error">{{ error }}</div>
   <div class="products-grid">
     <div class="product-card" *ngFor="let product of products">
-      <img [src]="product.urlFoto || 'assets/no-image.png'" [alt]="product.titulo">
+      <div style="position: relative;">
+        <img [src]="product.urlFoto || 'assets/no-image.png'" [alt]="product.titulo">
+        <span *ngIf="isAdmin() && product.estado && product.estado.nombre === 'Aprobado'"
+              style="position: absolute; top: 8px; left: 8px; background: #00e676; color: white; border-radius: 50%; padding: 6px; font-size: 1.2rem; z-index: 2; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+          ✔️
+        </span>
+        <span *ngIf="isAdmin() && product.estado && product.estado.nombre === 'Publicado'"
+              style="position: absolute; top: 8px; left: 8px; background: #2196f3; color: white; border-radius: 50%; padding: 6px; font-size: 1.2rem; z-index: 2; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+          🟦
+        </span>
+        <span *ngIf="isAdmin() && product.estado && product.estado.nombre === 'Borrador'"
+              style="position: absolute; top: 8px; left: 8px; background: #ffd600; color: #333; border-radius: 50%; padding: 6px; font-size: 1.2rem; z-index: 2; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+          🟨
+        </span>
+      </div>
       <div class="product-title">{{ product.titulo }}</div>
       <div class="product-description">{{ product.descripcion }}</div>
       <div class="product-price">Precio: {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>

@@ -7,6 +7,7 @@
   <div *ngIf="!loading && !error && product" class="product-detail-unified">
     <div class="product-image">
       <img [src]="product.urlFoto || 'assets/no-image.png'" [alt]="product.titulo">
+      <span *ngIf="product && (product.estado === 'Aprobado' || product.estado === 'APROBADO' || product.estado?.nombre === 'Aprobado' || product.estado?.nombre === 'APROBADO' || product.estado?.estado === 'Aprobado' || product.estado?.estado === 'APROBADO')" class="ticket-verde-imagen">&#x2705;</span>
     </div>
     <div class="product-info">
       <div class="product-title-main">{{ product.titulo }}</div>
@@ -28,7 +29,7 @@
           <span *ngIf="estadoError" class="error-message">{{ estadoError }}</span>
         </ng-container>
         <ng-container *ngIf="!puedeEditarEstado()">
-          <span [ngClass]="{'estado-publicado': (product?.estado?.estado || product?.estado) === 'Publicado'}">
+          <span [ngClass]="{'estado-publicado': (product?.estado?.estado || product?.estado) === 'Publicado', 'estado-aprobado': (product?.estado?.estado || product?.estado?.nombre || product?.estado) === 'Aprobado' || (product?.estado?.estado || product?.estado?.nombre || product?.estado) === 'APROBADO'}">
             {{ product?.estado?.estado || product?.estado?.nombre || product?.estado || 'Sin estado' }}
           </span>
         </ng-container>
@@ -40,6 +41,10 @@
         <button (click)="openIntercambioModal()" class="intercambio-btn">
           🔄 Intercambiar Producto
         </button>
+      </div>
+      <div *ngIf="product?.estado === 'APROBADO'" class="intercambiado-info">
+        <span class="ticket-verde">&#x2705;</span>
+        <span>Ya fue intercambiado</span>
       </div>
     </div>
   </div>

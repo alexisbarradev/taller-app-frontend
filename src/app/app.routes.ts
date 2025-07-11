@@ -22,7 +22,12 @@ export const routes: Routes = [
       { path: 'mis-productos', loadComponent: () => import('./user-products/user-products.component').then(m => m.UserProductsComponent) },
       { path: 'producto/:id', loadComponent: () => import('./product-view/product-view.component').then(m => m.ProductViewComponent) },
       { path: 'todos-los-productos', component: AllProductsComponent },
-      { path: 'intercambios', component: IntercambiosPanelComponent }
+      { path: 'intercambios', component: IntercambiosPanelComponent },
+      {
+        path: 'confirmar-intercambios',
+        canActivate: [authGuard],
+        loadComponent: () => import('./confirmar-intercambios/confirmar-intercambios.component').then(m => m.ConfirmarIntercambiosComponent)
+      }
     ]
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
