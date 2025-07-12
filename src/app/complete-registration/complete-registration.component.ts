@@ -38,6 +38,7 @@ export class CompleteRegistrationComponent implements OnInit {
       direccion: ['', Validators.required],
       usuario: ['', Validators.required],
       correo: [{ value: '', disabled: true }, [Validators.required, Validators.email]]
+      // comunidadId eliminado
     });
   }
 
@@ -149,7 +150,10 @@ export class CompleteRegistrationComponent implements OnInit {
   
         // Append all form fields to FormData
         Object.keys(formValue).forEach(key => {
-          formData.append(key, formValue[key]);
+          // No enviar comunidadId
+          if (key !== 'comunidadId') {
+            formData.append(key, formValue[key]);
+          }
         });
   
         // Append role, state, and provider
