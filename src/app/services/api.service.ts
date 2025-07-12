@@ -15,6 +15,7 @@ export class ApiService {
 
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
+    console.log('[ApiService] getHeaders, token:', token);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {})
@@ -56,5 +57,13 @@ export class ApiService {
 
   getOfertasEnviadas(userId: number): Observable<any> {
     return this.http.get<any>(`${this.publicacionesApiUrl}/intercambios/ofertas-enviadas/${userId}`, { headers: this.getHeaders() });
+  }
+
+  confirmarIntercambio(intercambioId: number, userId: number): Observable<any> {
+    return this.http.post<any>(`${this.publicacionesApiUrl}/intercambios/${intercambioId}/confirmar?userId=${userId}`, {}, { headers: this.getHeaders() });
+  }
+
+  revertirIntercambio(intercambioId: number, userId: number): Observable<any> {
+    return this.http.post<any>(`${this.publicacionesApiUrl}/intercambios/${intercambioId}/revertir?userId=${userId}`, {}, { headers: this.getHeaders() });
   }
 }

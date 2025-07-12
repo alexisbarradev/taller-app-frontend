@@ -8,10 +8,7 @@
         <tr>
           <th>ID</th>
           <th>RUT</th>
-          <th>Primer Nombre</th>
-          <th>Segundo Nombre</th>
-          <th>Apellido Paterno</th>
-          <th>Apellido Materno</th>
+          <th>Nombre Completo</th>
           <th>Usuario</th>
           <th>Correo</th>
           <th>URL Contrato</th>
@@ -26,13 +23,22 @@
         <tr *ngFor="let user of users">
           <td>{{ user.id }}</td>
           <td>{{ user.rut }}</td>
-          <td>{{ user.primerNombre }}</td>
-          <td>{{ user.segundoNombre }}</td>
-          <td>{{ user.apellidoPaterno }}</td>
-          <td>{{ user.apellidoMaterno }}</td>
+          <td>
+            <span>{{ (user.primerNombre || '') + ' ' + (user.segundoNombre || '') }}</span><br>
+            <span>{{ (user.apellidoPaterno || '') + ' ' + (user.apellidoMaterno || '') }}</span>
+          </td>
           <td>{{ user.usuario }}</td>
           <td>{{ user.correo }}</td>
-          <td>{{ user.urlContrato }}</td>
+          <td class="url-contrato-cell" style="position: relative;">
+            <a href="{{ user.urlContrato }}" target="_blank"
+               (mouseenter)="mostrarPreview = user.id"
+               (mouseleave)="mostrarPreview = null">
+              {{ user.urlContrato }}
+            </a>
+            <div *ngIf="mostrarPreview === user.id" class="img-preview-tooltip">
+              <img [src]="user.urlContrato" alt="Contrato" />
+            </div>
+          </td>
           <td>{{ user.direccion }}</td>
           <td>{{ user.proveedorAutenticacion }}</td>
           <td>{{ user.rol.nombre }}</td>

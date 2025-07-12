@@ -343,8 +343,8 @@ export class ProductViewComponent implements OnInit {
   }
 
   puedeEditarEstado(): boolean {
-    // Solo el dueño puede cambiar el estado
-    return this.currentUserId === this.product?.idAutor;
+    // Solo el dueño puede cambiar el estado y solo si NO está aprobado
+    return this.currentUserId === this.product?.idAutor && this.product?.estado?.nombre !== 'Aprobado' && this.product?.estado !== 'Aprobado';
   }
 
   esPublicado(): boolean {

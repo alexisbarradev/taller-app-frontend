@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class AllProductsComponent implements OnInit {
   products: any[] = [];
-  loading = false;
+  loading = true;
   error: string | null = null;
   editingProductId: number | null = null;
   editedProduct = { titulo: '', descripcion: '', precio: 0, estado: null };
@@ -41,7 +41,8 @@ export class AllProductsComponent implements OnInit {
           this.products = data;
         } else {
           this.products = data.filter(
-            p => p.estado && typeof p.estado.nombre === 'string' && p.estado.nombre.trim().toLowerCase() === 'publicado'
+            p => p.estado && typeof p.estado.nombre === 'string' &&
+              (p.estado.nombre.trim().toLowerCase() === 'publicado' || p.estado.nombre.trim().toLowerCase() === 'pendiente')
           );
         }
         this.loading = false;

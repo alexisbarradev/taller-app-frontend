@@ -144,6 +144,25 @@ button:hover {
   border-left: 4px solid #d32f2f;
 }
 
+.img-preview-tooltip {
+  position: absolute;
+  top: 1.5em;
+  left: 0;
+  z-index: 10;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 6px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  max-width: 220px;
+  max-height: 220px;
+}
+.img-preview-tooltip img {
+  max-width: 200px;
+  max-height: 200px;
+  display: block;
+}
+
 @media (max-width: 900px) {
   .users-list-card {
     padding: 1.2rem 0.5rem;

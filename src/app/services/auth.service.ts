@@ -66,7 +66,9 @@ export class AuthService {
    * Obtiene el token desde localStorage (o podrías extender a usar MSAL si lo prefieres)
    */
   getToken(): string | null {
-    return localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    console.log('[AuthService] getToken, token:', token);
+    return token;
   }
 
   /**

@@ -37,7 +37,15 @@
 
       <div *ngFor="let oferta of ofertasRecibidas" class="oferta-card">
         <div class="oferta-header">
-          <h3>Oferta de {{ oferta.nombreUsuarioSolicitante }}</h3>
+          <h3>
+            Oferta de
+            <ng-container *ngIf="getUserNameById(oferta.idUsuarioSolicitante); else loadingNameSolicitante">
+              {{ getUserNameById(oferta.idUsuarioSolicitante) }}
+            </ng-container>
+            <ng-template #loadingNameSolicitante>
+              <span class="spinner-small"></span>
+            </ng-template>
+          </h3>
           <span [class]="getEstadoClass(oferta.estadoIntercambio)">
             {{ getEstadoText(oferta.estadoIntercambio) }}
           </span>
@@ -88,10 +96,27 @@
           </div>
 
           <div *ngIf="oferta.estadoIntercambio === 'ACEPTADO'" class="oferta-status">
-            <span class="status-accepted">✅ Intercambio aceptado</span>
-            <small *ngIf="oferta.fechaRespuesta">
-              Respondido: {{ formatDate(oferta.fechaRespuesta) }}
-            </small>
+            <div class="confirmacion-info">
+              <span>
+                Tu confirmación: <b>{{ oferta.confirmacionPropietario }}</b>
+              </span>
+              <span>
+                Confirmación del otro usuario: <b>{{ oferta.confirmacionSolicitante }}</b>
+              </span>
+            </div>
+            <div *ngIf="oferta.confirmacionPropietario === 'PENDIENTE'">
+              <button (click)="confirmarIntercambio(oferta.id)" class="btn-aceptar">✅ Confirmar recepción</button>
+              <button (click)="revertirIntercambio(oferta.id)" class="btn-rechazar">↩️ Revertir</button>
+            </div>
+            <div *ngIf="oferta.confirmacionPropietario === 'CONFIRMADO' && oferta.confirmacionSolicitante !== 'CONFIRMADO'">
+              <span class="status-wait">⏳ Esperando confirmación del otro usuario...</span>
+            </div>
+            <div *ngIf="oferta.confirmacionPropietario === 'CONFIRMADO' && oferta.confirmacionSolicitante === 'CONFIRMADO'">
+              <span class="status-finalizado">🎉 Intercambio finalizado y aprobado</span>
+            </div>
+            <div *ngIf="oferta.confirmacionPropietario === 'REVERTIDO' || oferta.confirmacionSolicitante === 'REVERTIDO'">
+              <span class="status-revertido">❌ Intercambio cancelado/devuelto</span>
+            </div>
           </div>
 
           <div *ngIf="oferta.estadoIntercambio === 'RECHAZADO'" class="oferta-status">
@@ -112,7 +137,15 @@
 
       <div *ngFor="let oferta of ofertasEnviadas" class="oferta-card">
         <div class="oferta-header">
-          <h3>Oferta para {{ oferta.nombreUsuarioPropietario }}</h3>
+          <h3>
+            Oferta para
+            <ng-container *ngIf="getUserNameById(oferta.idUsuarioPropietario); else loadingNamePropietario">
+              {{ getUserNameById(oferta.idUsuarioPropietario) }}
+            </ng-container>
+            <ng-template #loadingNamePropietario>
+              <span class="spinner-small"></span>
+            </ng-template>
+          </h3>
           <span [class]="getEstadoClass(oferta.estadoIntercambio)">
             {{ getEstadoText(oferta.estadoIntercambio) }}
           </span>

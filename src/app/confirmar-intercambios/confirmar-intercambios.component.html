@@ -1,0 +1,92 @@
+<div class="confirmar-intercambios-panel">
+  <h2>Confirmar Intercambios</h2>
+  <p>Confirma o revierte los intercambios que tienes en proceso.</p>
+
+  <div *ngIf="loading" class="loading">
+    Cargando intercambios...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <div *ngIf="intercambios.length === 0" class="no-intercambios">
+      <p>No tienes intercambios en proceso de confirmación.</p>
+    </div>
+
+    <div *ngFor="let intercambio of intercambios" class="intercambio-card">
+      <div class="intercambio-header">
+        <h3>
+          Intercambio con
+          <ng-container *ngIf="getUserNameById(currentUserId === intercambio.idUsuarioSolicitante ? intercambio.idUsuarioPropietario : intercambio.idUsuarioSolicitante); else loadingName">
+            {{ getUserNameById(currentUserId === intercambio.idUsuarioSolicitante ? intercambio.idUsuarioPropietario : intercambio.idUsuarioSolicitante) }}
+          </ng-container>
+          <ng-template #loadingName>
+            <span class="spinner-small"></span>
+          </ng-template>
+        </h3>
+        <span class="estado">Estado: {{ intercambio.estadoIntercambio }}</span>
+      </div>
+      <div class="productos-comparison">
+        <div class="producto-solicitado">
+          <h4>Tu Producto</h4>
+          <div class="producto-info">
+            <img [src]="intercambio.productoSolicitado.urlFoto || 'assets/no-image.png'" [alt]="intercambio.productoSolicitado.titulo">
+            <div class="producto-details">
+              <h5>{{ intercambio.productoSolicitado.titulo }}</h5>
+              <p>{{ intercambio.productoSolicitado.descripcion }}</p>
+              <p class="price">{{ intercambio.productoSolicitado.precio | currency:'USD':'symbol':'1.0-0' }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="intercambio-arrow">⇄</div>
+        <div class="producto-ofrecido">
+          <h4>Producto del otro usuario</h4>
+          <div class="producto-info">
+            <img [src]="intercambio.productoOfrecido.urlFoto || 'assets/no-image.png'" [alt]="intercambio.productoOfrecido.titulo">
+            <div class="producto-details">
+              <h5>{{ intercambio.productoOfrecido.titulo }}</h5>
+              <p>{{ intercambio.productoOfrecido.descripcion }}</p>
+              <p class="price">{{ intercambio.productoOfrecido.precio | currency:'USD':'symbol':'1.0-0' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="intercambio-footer">
+        <div class="confirmacion-info">
+          <span>
+            Tu confirmación: <b>
+              {{ currentUserId === intercambio.idUsuarioPropietario ? intercambio.confirmacionPropietario : intercambio.confirmacionSolicitante }}
+            </b>
+          </span>
+          <span>
+            Confirmación del otro usuario: <b>
+              {{ currentUserId === intercambio.idUsuarioPropietario ? intercambio.confirmacionSolicitante : intercambio.confirmacionPropietario }}
+            </b>
+          </span>
+        </div>
+        <div *ngIf="(intercambio.idUsuarioPropietario === currentUserId && intercambio.confirmacionPropietario === 'PENDIENTE') ||
+                    (intercambio.idUsuarioSolicitante === currentUserId && intercambio.confirmacionSolicitante === 'PENDIENTE')">
+          <button (click)="confirmarIntercambio(intercambio.id)" class="btn-aceptar">✅ Confirmar recepción</button>
+          <button (click)="revertirIntercambio(intercambio.id)" class="btn-rechazar">↩️ Revertir</button>
+        </div>
+        <div *ngIf="esMiConfirmacionPendiente(intercambio)">
+          <span class="status-wait">⏳ Esperando tu confirmación...</span>
+        </div>
+        <div *ngIf="esConfirmacionPendienteDelOtro(intercambio)">
+          <span class="status-wait">⏳ Esperando confirmación del otro usuario...</span>
+        </div>
+        <div *ngIf="intercambio.confirmacionPropietario === 'CONFIRMADO' && intercambio.confirmacionSolicitante === 'CONFIRMADO'">
+          <span class="status-finalizado">🎉 Intercambio finalizado y aprobado</span>
+        </div>
+        <div *ngIf="intercambio.confirmacionPropietario === 'REVERTIDO' || intercambio.confirmacionSolicitante === 'REVERTIDO'">
+          <span class="status-revertido">❌ Intercambio cancelado/devuelto</span>
+        </div>
+        <div class="intercambio-date">
+          <small>Intercambio iniciado: {{ formatDate(intercambio.fechaCreacion) }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

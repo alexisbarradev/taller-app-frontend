@@ -7,6 +7,10 @@
   </div>
   <div *ngIf="!loading && !error && products.length > 0" class="products-grid">
     <div class="product-card" *ngFor="let product of products">
+      <div class="product-img-container">
+        <img class="product-img" [src]="product.urlFoto || 'assets/no-image.png'" [alt]="product.titulo">
+        <span *ngIf="product && (product.estado === 'Aprobado' || product.estado === 'APROBADO' || product.estado?.nombre === 'Aprobado' || product.estado?.nombre === 'APROBADO' || product.estado?.estado === 'Aprobado' || product.estado?.estado === 'APROBADO')" class="ticket-verde-imagen">&#x2705;</span>
+      </div>
       <div class="product-title">{{ product.titulo }}</div>
       <div class="product-description">{{ product.descripcion }}</div>
       <div class="product-price">Precio: {{ product.precio | currency:'USD':'symbol':'1.0-0' }}</div>
