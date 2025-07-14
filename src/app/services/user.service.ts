@@ -23,11 +23,16 @@ export interface Usuario {
   apellidoMaterno: string;
   usuario: string;
   correo: string;
+  numeroContacto?: string;
   urlContrato: string;
   direccion: string;
   proveedorAutenticacion: string;
   rol: RolUsuario;
   estado: EstadoUsuario;
+  region?: { id: number; nombre: string };
+  provincia?: { id: number; nombre: string };
+  comuna?: { id: number; nombre: string };
+  comunidad?: { id: number; nombreComunidad: string };
 }
 
 @Injectable({ providedIn: 'root' })

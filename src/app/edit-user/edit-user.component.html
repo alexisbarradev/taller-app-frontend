@@ -9,8 +9,8 @@
   </div>
   <h2 class="form-title">Editar Usuario</h2>
   <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="edit-user-form">
-    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-    <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert alert-success" role="alert">{{ successMessage }}</div>
 
     <!-- Primer Nombre -->
     <div class="input-group">
@@ -59,7 +59,7 @@
         {{ selectedFile.name }}
       </div>
     </div>
-    <div class="message error" *ngIf="fileError">{{ fileError }}</div>
+    <div *ngIf="fileError" class="alert alert-danger" role="alert">{{ fileError }}</div>
 
     <!-- Dirección -->
     <div class="input-group">
@@ -77,6 +77,76 @@
     <div class="input-group">
       <label for="usuario">Nombre de Usuario</label>
       <input id="usuario" type="text" formControlName="usuario" placeholder="Nombre de Usuario" [disabled]="isSubmitting">
+    </div>
+
+    <!-- Número de Contacto -->
+    <div class="input-group">
+      <label for="numeroContacto">Número de Contacto</label>
+      <input id="numeroContacto" type="text" formControlName="numeroContacto" [disabled]="isSubmitting" placeholder="Ej: 987654321">
+      <div *ngIf="editForm.get('numeroContacto')?.invalid && (editForm.get('numeroContacto')?.touched || editForm.get('numeroContacto')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+        <span *ngIf="editForm.get('numeroContacto')?.errors?.['required']">El número de contacto es obligatorio.</span>
+        <span *ngIf="editForm.get('numeroContacto')?.errors?.['pattern']">Solo se permiten números.</span>
+      </div>
+    </div>
+
+    <!-- Campos de Geografía -->
+    <div class="row">
+      <div class="input-group">
+        <label for="idRegion">Región *</label>
+        <select id="idRegion" formControlName="idRegion" [disabled]="isSubmitting || isLoadingGeografia">
+          <option value="">Selecciona una región</option>
+          <option *ngFor="let region of regiones" [value]="region.id">
+            {{ region.nombre }}
+          </option>
+        </select>
+        <div *ngIf="editForm.get('idRegion')?.invalid && (editForm.get('idRegion')?.touched || editForm.get('idRegion')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+          <span *ngIf="editForm.get('idRegion')?.errors?.['required']">La región es obligatoria.</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="idProvincia">Provincia *</label>
+        <select id="idProvincia" formControlName="idProvincia" [disabled]="isSubmitting || isLoadingGeografia || !editForm.get('idRegion')?.value">
+          <option value="">Selecciona una provincia</option>
+          <option *ngFor="let provincia of provincias" [value]="provincia.id">
+            {{ provincia.nombre }}
+          </option>
+        </select>
+        <div *ngIf="editForm.get('idProvincia')?.invalid && (editForm.get('idProvincia')?.touched || editForm.get('idProvincia')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+          <span *ngIf="editForm.get('idProvincia')?.errors?.['required']">La provincia es obligatoria.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-group">
+        <label for="idComuna">Comuna *</label>
+        <select id="idComuna" formControlName="idComuna" [disabled]="isSubmitting || isLoadingGeografia || !editForm.get('idProvincia')?.value">
+          <option value="">Selecciona una comuna</option>
+          <option *ngFor="let comuna of comunas" [value]="comuna.id">
+            {{ comuna.nombre }}
+          </option>
+        </select>
+        <div *ngIf="editForm.get('idComuna')?.invalid && (editForm.get('idComuna')?.touched || editForm.get('idComuna')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+          <span *ngIf="editForm.get('idComuna')?.errors?.['required']">La comuna es obligatoria.</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="idComunidad">Comunidad *</label>
+        <select id="idComunidad" formControlName="idComunidad" [disabled]="isSubmitting || isLoadingGeografia || !editForm.get('idComuna')?.value">
+          <option value="">Selecciona una comunidad</option>
+          <option *ngFor="let comunidad of comunidades" [value]="comunidad.id">
+            {{ comunidad.nombreComunidad }}
+          </option>
+        </select>
+        <div *ngIf="editForm.get('idComunidad')?.invalid && (editForm.get('idComunidad')?.touched || editForm.get('idComunidad')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+          <span *ngIf="editForm.get('idComunidad')?.errors?.['required']">La comunidad es obligatoria.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicador de carga para geografía -->
+    <div *ngIf="isLoadingGeografia" class="alert alert-info" role="alert">
+      <i class="fa fa-spinner fa-spin"></i> Cargando datos geográficos...
     </div>
 
     <!-- Rol y Estado -->
