@@ -3,7 +3,7 @@
     <h2 class="product-view-title">Detalle del Producto</h2>
   </div>
   <div *ngIf="loading" class="loading">Cargando producto...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="error" class="alert alert-danger" role="alert">{{ error }}</div>
   <div *ngIf="!loading && !error && product" class="product-detail-unified">
     <div class="product-image">
       <img [src]="product.urlFoto || 'assets/no-image.png'" [alt]="product.titulo">

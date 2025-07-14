@@ -7,6 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { UserService, Usuario, RolUsuario, EstadoUsuario } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
+import { GeografiaService, Region, Provincia, Comuna, Comunidad } from '../services/geografia.service';
 
 @Component({
   selector: 'app-edit-user',
@@ -26,6 +27,13 @@ export class EditUserComponent implements OnInit {
   fileError: string | null = null;
   currentUser: Usuario | null = null;
 
+  // Datos geográficos
+  regiones: Region[] = [];
+  provincias: Provincia[] = [];
+  comunas: Comuna[] = [];
+  comunidades: Comunidad[] = [];
+  isLoadingGeografia: boolean = false;
+
   roles: RolUsuario[] = [
     { id: 1, nombre: 'Administrador' },
     { id: 2, nombre: 'Usuario' }
@@ -42,7 +50,8 @@ export class EditUserComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    private geografiaService: GeografiaService
   ) {}
 
   ngOnInit() {
@@ -54,11 +63,19 @@ export class EditUserComponent implements OnInit {
       apellidoMaterno: ['', Validators.required],
       direccion: ['', Validators.required],
       usuario: ['', Validators.required],
+      numeroContacto: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       correo: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
       rolId: ['', Validators.required],
       estadoId: ['', Validators.required],
-      urlContrato: ['']
+      urlContrato: [''],
+      idRegion: ['', Validators.required],
+      idProvincia: ['', Validators.required],
+      idComuna: ['', Validators.required],
+      idComunidad: ['', Validators.required] // El administrador puede seleccionar la comunidad
     });
+
+    this.cargarRegiones();
+    this.setupGeografiaListeners();
 
     this.route.paramMap.subscribe(async params => {
       const id = params.get('id');
@@ -76,11 +93,27 @@ export class EditUserComponent implements OnInit {
               apellidoMaterno: user.apellidoMaterno,
               direccion: user.direccion,
               usuario: user.usuario,
+              numeroContacto: user.numeroContacto || '',
               correo: user.correo,
               rolId: user.rol?.id || '',
               estadoId: user.estado?.id || '',
-              urlContrato: user.urlContrato || ''
+              urlContrato: user.urlContrato || '',
+              idRegion: user.region?.id || '',
+              idProvincia: user.provincia?.id || '',
+              idComuna: user.comuna?.id || '',
+              idComunidad: user.comunidad?.id || ''
             });
+
+            // Cargar provincias y comunas si ya hay región y provincia seleccionadas
+            if (user.region?.id) {
+              await this.cargarProvincias(user.region.id);
+              if (user.provincia?.id) {
+                await this.cargarComunas(user.provincia.id);
+                if (user.comuna?.id) {
+                  await this.cargarComunidades();
+                }
+              }
+            }
           }
         } catch (err: any) {
           this.errorMessage = err.message || 'Error al cargar usuario';
@@ -192,5 +225,106 @@ export class EditUserComponent implements OnInit {
   getEstadoName(estadoId: number): string {
     const estado = this.estados.find(e => e.id === estadoId);
     return estado ? estado.estado : '';
+  }
+
+  // Cargar regiones al inicializar
+  async cargarRegiones(): Promise<void> {
+    try {
+      this.isLoadingGeografia = true;
+      this.regiones = await firstValueFrom(this.geografiaService.getRegiones());
+      console.log('Regiones cargadas:', this.regiones);
+    } catch (error) {
+      console.error('Error cargando regiones:', error);
+      this.errorMessage = 'Error al cargar las regiones. Por favor, recarga la página.';
+    } finally {
+      this.isLoadingGeografia = false;
+    }
+  }
+
+  // Configurar listeners para cambios en los campos geográficos
+  setupGeografiaListeners(): void {
+    // Cuando cambia la región, cargar provincias
+    this.editForm.get('idRegion')?.valueChanges.subscribe(regionId => {
+      if (regionId) {
+        this.cargarProvincias(regionId);
+        // Limpiar campos dependientes
+        this.editForm.patchValue({
+          idProvincia: '',
+          idComuna: '',
+          idComunidad: ''
+        });
+        this.provincias = [];
+        this.comunas = [];
+        this.comunidades = [];
+      }
+    });
+
+    // Cuando cambia la provincia, cargar comunas
+    this.editForm.get('idProvincia')?.valueChanges.subscribe(provinciaId => {
+      if (provinciaId) {
+        this.cargarComunas(provinciaId);
+        // Limpiar campo dependiente
+        this.editForm.patchValue({
+          idComuna: '',
+          idComunidad: ''
+        });
+        this.comunas = [];
+        this.comunidades = [];
+      }
+    });
+
+    // Cuando cambia la comuna, cargar comunidades
+    this.editForm.get('idComuna')?.valueChanges.subscribe(comunaId => {
+      if (comunaId) {
+        this.cargarComunidades();
+        // Limpiar campo dependiente
+        this.editForm.patchValue({
+          idComunidad: ''
+        });
+        this.comunidades = [];
+      }
+    });
+  }
+
+  // Cargar provincias por región
+  async cargarProvincias(regionId: number): Promise<void> {
+    try {
+      this.isLoadingGeografia = true;
+      this.provincias = await firstValueFrom(this.geografiaService.getProvinciasPorRegion(regionId));
+      console.log('Provincias cargadas para región', regionId, ':', this.provincias);
+    } catch (error) {
+      console.error('Error cargando provincias:', error);
+      this.errorMessage = 'Error al cargar las provincias.';
+    } finally {
+      this.isLoadingGeografia = false;
+    }
+  }
+
+  // Cargar comunas por provincia
+  async cargarComunas(provinciaId: number): Promise<void> {
+    try {
+      this.isLoadingGeografia = true;
+      this.comunas = await firstValueFrom(this.geografiaService.getComunasPorProvincia(provinciaId));
+      console.log('Comunas cargadas para provincia', provinciaId, ':', this.comunas);
+    } catch (error) {
+      console.error('Error cargando comunas:', error);
+      this.errorMessage = 'Error al cargar las comunas.';
+    } finally {
+      this.isLoadingGeografia = false;
+    }
+  }
+
+  // Cargar comunidades (todas, no dependientes de comuna)
+  async cargarComunidades(): Promise<void> {
+    try {
+      this.isLoadingGeografia = true;
+      this.comunidades = await firstValueFrom(this.geografiaService.getTodasComunidades());
+      console.log('Comunidades cargadas:', this.comunidades);
+    } catch (error) {
+      console.error('Error cargando comunidades:', error);
+      this.errorMessage = 'Error al cargar las comunidades.';
+    } finally {
+      this.isLoadingGeografia = false;
+    }
   }
 }

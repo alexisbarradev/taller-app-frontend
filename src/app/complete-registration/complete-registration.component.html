@@ -9,9 +9,6 @@
       <input id="correo" type="email" formControlName="correo" readonly>
     </div>
 
-    <!-- Campo oculto para comunidadId -->
-    <!-- <input type="hidden" formControlName="comunidadId"> -->
-
     <!-- RUT -->
     <div class="input-group">
       <label for="rut">RUT</label>
@@ -46,6 +43,54 @@
       <label for="direccion">Dirección</label>
       <input id="direccion" type="text" formControlName="direccion" [disabled]="isSubmitting">
     </div>
+
+    <!-- Campos de Geografía -->
+    <div class="row">
+      <div class="input-group">
+        <label for="idRegion">Región *</label>
+        <select id="idRegion" formControlName="idRegion" [disabled]="isSubmitting || isLoadingGeografia">
+          <option value="">Selecciona una región</option>
+          <option *ngFor="let region of regiones" [value]="region.id">
+            {{ region.nombre }}
+          </option>
+        </select>
+        <div *ngIf="registrationForm.get('idRegion')?.invalid && (registrationForm.get('idRegion')?.touched || registrationForm.get('idRegion')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+          <span *ngIf="registrationForm.get('idRegion')?.errors?.['required']">La región es obligatoria.</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="idProvincia">Provincia *</label>
+        <select id="idProvincia" formControlName="idProvincia" [disabled]="isSubmitting || isLoadingGeografia || !registrationForm.get('idRegion')?.value">
+          <option value="">Selecciona una provincia</option>
+          <option *ngFor="let provincia of provincias" [value]="provincia.id">
+            {{ provincia.nombre }}
+          </option>
+        </select>
+        <div *ngIf="registrationForm.get('idProvincia')?.invalid && (registrationForm.get('idProvincia')?.touched || registrationForm.get('idProvincia')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+          <span *ngIf="registrationForm.get('idProvincia')?.errors?.['required']">La provincia es obligatoria.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-group">
+        <label for="idComuna">Comuna *</label>
+        <select id="idComuna" formControlName="idComuna" [disabled]="isSubmitting || isLoadingGeografia || !registrationForm.get('idProvincia')?.value">
+          <option value="">Selecciona una comuna</option>
+          <option *ngFor="let comuna of comunas" [value]="comuna.id">
+            {{ comuna.nombre }}
+          </option>
+        </select>
+        <div *ngIf="registrationForm.get('idComuna')?.invalid && (registrationForm.get('idComuna')?.touched || registrationForm.get('idComuna')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+          <span *ngIf="registrationForm.get('idComuna')?.errors?.['required']">La comuna es obligatoria.</span>
+        </div>
+      </div>
+      <!-- Comunidad oculta - se envía automáticamente con ID 3 -->
+      <div class="input-group" style="display: none;">
+        <label for="idComunidad">Comunidad</label>
+        <input id="idComunidad" type="hidden" formControlName="idComunidad" value="3">
+      </div>
+    </div>
     
     <!-- Nombre de Usuario -->
     <div class="input-group">
@@ -53,10 +98,20 @@
       <input id="usuario" type="text" formControlName="usuario" placeholder="Crea un alias único" [disabled]="isSubmitting">
     </div>
 
+    <!-- Número de Contacto -->
+    <div class="input-group">
+      <label for="numeroContacto">Número de Contacto</label>
+      <input id="numeroContacto" type="text" formControlName="numeroContacto" [disabled]="isSubmitting" placeholder="Ej: 987654321">
+      <div *ngIf="registrationForm.get('numeroContacto')?.invalid && (registrationForm.get('numeroContacto')?.touched || registrationForm.get('numeroContacto')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+        <span *ngIf="registrationForm.get('numeroContacto')?.errors?.['required']">El número de contacto es obligatorio.</span>
+        <span *ngIf="registrationForm.get('numeroContacto')?.errors?.['pattern']">Solo se permiten números.</span>
+      </div>
+    </div>
+
     <!-- File Upload -->
     <div class="file-upload">
       <label for="contractFile" class="file-label">
-        <i class="fa fa-upload"></i> Subir contrato (PDF o imagen)
+        <i class="fa fa-upload"></i> Subir prueba de dirección (PDF o imagen)
       </label>
       <input 
         type="file" 
@@ -70,11 +125,17 @@
         {{ selectedFile.name }}
       </div>
     </div>
-    <div class="message error" *ngIf="fileError">{{ fileError }}</div>
+    <!-- Mensaje de error para archivo -->
+    <div *ngIf="fileError" class="alert alert-danger" role="alert">{{ fileError }}</div>
 
-    <!-- Mensajes de éxito y error -->
-    <div *ngIf="successMessage" class="message success">{{ successMessage }}</div>
-    <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
+    <!-- Indicador de carga para geografía -->
+    <div *ngIf="isLoadingGeografia" class="alert alert-info" role="alert">
+      <i class="fa fa-spinner fa-spin"></i> Cargando datos geográficos...
+    </div>
+
+    <!-- Mensajes de éxito y error generales -->
+    <div *ngIf="successMessage" class="alert alert-success" role="alert">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
 
     <button type="submit" [disabled]="isSubmitting || !registrationForm.valid">
       {{ isSubmitting ? 'Guardando...' : 'Completar Registro' }}

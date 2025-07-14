@@ -18,7 +18,7 @@
         <span>Iniciar sesión con Microsoft</span>
       </button>
 
-      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
     </div>
   </div>
 </div>

@@ -39,17 +39,38 @@ p {
   color: #444;
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+  font-size: 14px;
 }
 
 .input-group input:read-only {
   background-color: #e9ecef;
   cursor: not-allowed;
+}
+
+.input-group select {
+  background-color: white;
+  cursor: pointer;
+}
+
+.input-group select:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+  color: #6c757d;
+}
+
+.input-group select option {
+  padding: 8px;
+}
+
+input[type="file"] {
+  margin-bottom: 16px;
 }
 
 .row {
@@ -98,4 +119,38 @@ button:hover:not(:disabled) {
 .error {
   background-color: #f8d7da;
   color: #721c24;
+}
+
+/* Estilos para los campos de geografía */
+.input-group select:focus {
+  outline: none;
+  border-color: #1E2A3A;
+  box-shadow: 0 0 0 2px rgba(30, 42, 58, 0.2);
+}
+
+/* Indicador de carga */
+.alert-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.alert-info i {
+  margin-right: 8px;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .form-container {
+    padding: 20px;
+    margin: 20px;
+  }
 } 
