@@ -11,12 +11,20 @@
         <textarea id="descripcion" name="descripcion" [(ngModel)]="publicacion.descripcion" required class="form-control"></textarea>
       </div>
       <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="esGratis" (change)="toggleGratis()" /> Gratis
+        </label>
+      </div>
+      <div class="form-group">
         <label for="precio">Precio:</label>
-        <input id="precio" name="precio" type="number" [(ngModel)]="publicacion.precio" required class="form-control" />
+        <input id="precio" name="precio" type="number" [(ngModel)]="publicacion.precio" [disabled]="esGratis" required class="form-control" />
       </div>
       <div class="form-group">
         <label for="foto">Foto:</label>
-        <input id="foto" name="foto" type="file" accept="image/*" (change)="onFileSelected($event)" class="form-control" />
+        <input id="foto" name="foto" type="file" accept="image/*" (change)="onFileSelected($event)" class="form-control" required />
+        <div *ngIf="foto === null && fotoIntentado && mostrarErrorFoto" class="alert alert-danger mt-2 p-2" role="alert">
+          Debes seleccionar una imagen para publicar el producto.
+        </div>
       </div>
       <div class="form-group" *ngIf="fotoPreview">
         <label>Previsualización:</label>

@@ -358,7 +358,7 @@ export class ProductViewComponent implements OnInit {
     const estadoId = nuevoEstado === 'Publicado' ? 1 : 2;
     const datosActualizados = {
       ...this.product,
-      estado: { id: estadoId }
+      estado: { id: estadoId } // Enviar como objeto, no como número
     };
     const token = localStorage.getItem('token');
     const headers = token ? { headers: new HttpHeaders({ 'Authorization': `Bearer ${token}` }) } : {};

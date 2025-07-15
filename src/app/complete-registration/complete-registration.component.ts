@@ -7,6 +7,49 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { GeografiaService, Region, Provincia, Comuna } from '../services/geografia.service';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { RutValidationService } from '../services/rut-validation.service';
+import { RutAsyncValidator } from '../validators/rut-async.validator';
+
+// Validador local de RUT como fallback
+export function rutValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+  if (!value) return null;
+  return validarRut(value) ? null : { rutInvalido: { message: 'RUT inválido' } };
+}
+
+// Función de validación local de RUT chileno
+function validarRut(rut: string): boolean {
+  // Validar que el RUT tenga el formato correcto con guión
+  if (!rut.includes('-')) return false;
+
+  // Separar cuerpo y dígito verificador
+  const parts = rut.split('-');
+  if (parts.length !== 2) return false;
+
+  const cuerpo = parts[0].replace(/\./g, ''); // Eliminar puntos del cuerpo
+  const dv = parts[1].toUpperCase(); // Dígito verificador
+
+  // Validar que el cuerpo solo contenga números
+  if (!/^[0-9]+$/.test(cuerpo)) return false;
+
+  // Validar que el dígito verificador sea un número o K
+  if (!/^[0-9K]$/.test(dv)) return false;
+
+  // El cuerpo debe tener al menos 7 dígitos (RUTs válidos en Chile)
+  if (cuerpo.length < 7) return false;
+
+  let suma = 0;
+  let multiplo = 2;
+  for (let i = cuerpo.length - 1; i >= 0; i--) {
+    suma += parseInt(cuerpo.charAt(i), 10) * multiplo;
+    multiplo = multiplo < 7 ? multiplo + 1 : 2;
+  }
+  const dvEsperado = 11 - (suma % 11);
+  let dvCalc = dvEsperado === 11 ? '0' : dvEsperado === 10 ? 'K' : dvEsperado.toString();
+
+  return dv === dvCalc;
+}
 
 @Component({
   selector: 'app-complete-registration',
@@ -35,17 +78,18 @@ export class CompleteRegistrationComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private authService: AuthService,
-    private geografiaService: GeografiaService
+    private geografiaService: GeografiaService,
+    private rutValidationService: RutValidationService
   ) {
     this.registrationForm = this.fb.group({
-      rut: ['', Validators.required],
+      rut: ['', [Validators.required, rutValidator], [RutAsyncValidator.validateRutImmediate(this.rutValidationService)]],
       primerNombre: ['', Validators.required],
       segundoNombre: [''],
       apellidoPaterno: ['', Validators.required],
       apellidoMaterno: ['', Validators.required],
       direccion: ['', Validators.required],
       usuario: ['', Validators.required],
-      numeroContacto: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      numeroContacto: ['', [Validators.required, Validators.pattern('^[2-9][0-9]{8}$')]],
       correo: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
       idRegion: ['', Validators.required],
       idProvincia: ['', Validators.required],
@@ -57,6 +101,7 @@ export class CompleteRegistrationComponent implements OnInit {
   ngOnInit(): void {
     this.cargarRegiones();
     this.setupGeografiaListeners();
+    this.configurarValidacionRut();
     
     this.route.queryParams.subscribe(params => {
       const email = params['email'];
@@ -87,6 +132,46 @@ export class CompleteRegistrationComponent implements OnInit {
         // Note: apellidoMaterno will need to be entered manually
       });
     });
+  }
+
+  /**
+   * Configurar la validación de RUT
+   */
+  private configurarValidacionRut(): void {
+    console.log('Validación de RUT configurada con lógica integrada');
+    // La validación se hace localmente con la lógica de Azure Function integrada
+  }
+
+  /**
+   * Cambiar a validación en tiempo real (con debounce)
+   * Útil para validación mientras el usuario escribe
+   */
+  public cambiarAValidacionTiempoReal(): void {
+    const rutControl = this.registrationForm.get('rut');
+    if (rutControl) {
+      // Remover validador asíncrono actual
+      rutControl.clearAsyncValidators();
+      // Agregar validador con debounce
+      rutControl.setAsyncValidators(RutAsyncValidator.validateRutWithAzure(this.rutValidationService));
+      rutControl.updateValueAndValidity();
+      console.log('Cambiado a validación en tiempo real');
+    }
+  }
+
+  /**
+   * Cambiar a validación inmediata (al enviar formulario)
+   * Útil para reducir llamadas a la Azure Function
+   */
+  public cambiarAValidacionInmediata(): void {
+    const rutControl = this.registrationForm.get('rut');
+    if (rutControl) {
+      // Remover validador asíncrono actual
+      rutControl.clearAsyncValidators();
+      // Agregar validador inmediato
+      rutControl.setAsyncValidators(RutAsyncValidator.validateRutImmediate(this.rutValidationService));
+      rutControl.updateValueAndValidity();
+      console.log('Cambiado a validación inmediata');
+    }
   }
 
   // Cargar regiones al inicializar

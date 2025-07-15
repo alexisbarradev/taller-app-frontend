@@ -62,7 +62,7 @@
 .edit-user-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.2rem;
 }
 
 .input-group {
@@ -89,6 +89,9 @@
   margin-bottom: 0.5rem;
   background: #f8fafc;
   transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .input-group input:focus,
@@ -103,11 +106,12 @@
   color: #666;
 }
 
+/* Mejorar responsividad y balance visual */
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.7rem;
-  margin-bottom: 0.5rem;
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
 }
 
 @media (max-width: 900px) {
@@ -117,12 +121,23 @@
   }
 }
 
+@media (max-width: 700px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    margin-bottom: 1.2rem;
+  }
+  .form-container {
+    padding: 0.7rem 0.2rem;
+  }
+}
+
 .file-upload {
   border: 2px dashed #e3e8f0;
   border-radius: 10px;
   padding: 1.2rem;
   text-align: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.2rem;
   background: #f8fafc;
 }
 
@@ -160,7 +175,7 @@ button {
   font-size: 1.25rem;
   font-weight: 700;
   cursor: pointer;
-  margin-top: 1.2rem;
+  margin-top: 1.5rem;
   transition: background 0.2s;
   box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
 }
@@ -209,4 +224,8 @@ button:disabled {
   color: #d32f2f;
   background: #ffebee;
   border-left: 4px solid #d32f2f;
+}
+
+.alert {
+  margin-bottom: 0.7rem;
 } 

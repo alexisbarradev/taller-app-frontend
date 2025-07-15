@@ -13,6 +13,17 @@
     <div class="input-group">
       <label for="rut">RUT</label>
       <input id="rut" type="text" formControlName="rut" placeholder="Ej: 12345678-9" [disabled]="isSubmitting">
+      <div *ngIf="registrationForm.get('rut')?.hasError('rutInvalido') && (registrationForm.get('rut')?.touched || registrationForm.get('rut')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
+        <span *ngIf="registrationForm.get('rut')?.errors?.['rutInvalido']?.message">
+          {{ registrationForm.get('rut')?.errors?.['rutInvalido']?.message }}
+        </span>
+        <span *ngIf="!registrationForm.get('rut')?.errors?.['rutInvalido']?.message">
+          RUT inválido. Verifica el formato y el dígito verificador.
+        </span>
+      </div>
+      <div *ngIf="registrationForm.get('rut')?.pending" class="alert alert-info mt-2 p-2" role="alert">
+        <i class="fa fa-spinner fa-spin"></i> Validando RUT...
+      </div>
     </div>
 
     <!-- Nombre y Apellidos -->
@@ -101,10 +112,12 @@
     <!-- Número de Contacto -->
     <div class="input-group">
       <label for="numeroContacto">Número de Contacto</label>
-      <input id="numeroContacto" type="text" formControlName="numeroContacto" [disabled]="isSubmitting" placeholder="Ej: 987654321">
+      <input id="numeroContacto" type="text" formControlName="numeroContacto" [disabled]="isSubmitting" placeholder="Ej: 987654321 o 222345678">
       <div *ngIf="registrationForm.get('numeroContacto')?.invalid && (registrationForm.get('numeroContacto')?.touched || registrationForm.get('numeroContacto')?.dirty)" class="alert alert-danger mt-2 p-2" role="alert">
         <span *ngIf="registrationForm.get('numeroContacto')?.errors?.['required']">El número de contacto es obligatorio.</span>
-        <span *ngIf="registrationForm.get('numeroContacto')?.errors?.['pattern']">Solo se permiten números.</span>
+        <span *ngIf="registrationForm.get('numeroContacto')?.errors?.['pattern']">
+          Debe ser un número chileno válido de 9 dígitos (celular o fijo). Ejemplo: 987654321 o 222345678.
+        </span>
       </div>
     </div>
 
