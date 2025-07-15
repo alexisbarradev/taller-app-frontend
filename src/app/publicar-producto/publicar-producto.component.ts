@@ -35,6 +35,9 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
   estados: any[] = []; // Lista de estados para el select
   foto: File | null = null;
   fotoPreview: string | ArrayBuffer | null = null;
+  fotoIntentado: boolean = false;
+  mostrarErrorFoto: boolean = false;
+  esGratis: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -109,7 +112,19 @@ export class PublicarProductoComponent implements OnInit, OnDestroy {
     }
   }
 
+  toggleGratis() {
+    if (this.esGratis) {
+      this.publicacion.precio = 0;
+    }
+  }
+
   onSubmit(estado: number): void {
+    this.fotoIntentado = true;
+    this.mostrarErrorFoto = false;
+    if (!this.foto) {
+      this.mostrarErrorFoto = true;
+      return;
+    }
     console.log('[PublicarProducto] idAutor antes de enviar:', this.publicacion.idAutor);
     const token = this.authService.getToken();
     if (!token) {

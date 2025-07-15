@@ -240,6 +240,10 @@
   gap: 1rem;
 }
 
+.oferta-status > div > button {
+  margin-right: 1rem;
+}
+
 .btn-aceptar {
   background: #28a745;
   color: white;
